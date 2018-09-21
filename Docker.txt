@@ -1,0 +1,54 @@
+View Docker containers:
+	"sudo docker container ls"
+	OR
+	"sudo docker ps -a"
+
+Stop a Docker container:
+	"sudo docker container stop <CONTAINER_ID>"
+
+View stopped Docker containers:
+	"sudo docker container ls -aq -f status=exited"
+	"sudo docker ps -a -f status=exited"
+
+Remove a Docker container:
+	"sudo docker rm <CONTAINER_ID>"
+
+Clean all dangling (non-running) Docker containers:
+	"sudo docker prune"
+
+Remove a Docker image:
+	"sudo docker rmi <IMAGE_ID>"
+
+Run a Docker container with remove-on-exit enabled:
+	"sudo docker run --rm <IMAGE_ID>"
+
+List Docker volumes:
+	"sudo docker volume ls"
+
+Remove a Docker volume:
+	"sudo docker volume rm <VOLUME_ID>"
+
+Remove a Docker container with an associated volume:
+	"sudo docker rm -v <CONTAINER_ID>"
+
+Get a shell into a Docker container:
+	"sudo docker exec -it <CONTAINER_ID> /bin/bash"
+
+Send a command to a Docker container:
+	"sudo docker exec -it <CONTAINER_ID> <COMMAND>"
+
+View Docker disk usage:
+	"sudo docker ps -s"
+	OR
+	"sudo docker system df"
+	OR
+	"sudo docker system df -v"
+
+Clean dangling Docker files:
+	"sudo docker system prune"
+	OR (for total removal of all containers, volumes, and images not running)
+	"sudo docker system prune -a"
+
+Create a new Docker image from a container:
+	"sudo docker commit <CONTAINER_ID> <NEW_CONTAINER_NAME>"
+

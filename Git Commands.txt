@@ -1,0 +1,198 @@
+***WORD OF ADVICE: Always "git pull" BEFORE you "git push"***
+
+Procedure for pushing a change from your local repository to the
+remote origin repository:
+
+	git pull
+	git add [FILE NAMES]
+	git commit -m [COMMIT MESSAGE]
+	git push origin [NAME OF BRANCH]
+
+
+
+To create a local clone of a GitHub repository:
+
+	git clone https://github.com/georgyzakharov/ProjCompetition1.git
+
+To list all branches in your local repository:
+
+	git branch -a
+
+To switch to a branch you want to work in:
+
+	git checkout [NAME OF BRANCH]
+
+To confirm you are working in the branch that you think you are:
+
+	git branch
+
+To update your local repository:
+
+	git pull
+
+To commit your changes to the working branch:
+
+	git add [NAMES OF FILES THAT WERE ADDED/CHANGED]
+		Alternatively, you can add the entire
+		directory where the files are located
+		(e.g., "git add [NAME OF DIRECTORY]")
+
+	git commit -m "[WRITE COMMIT MESSAGE HERE]"
+
+	git push origin [NAME OF BRANCH TO PUSH TO]
+
+Location of global Git config file:
+
+	~/.gitconfig
+
+Edit your identity for Git (your username and email):
+
+	git config --global user.name "[USERNAME]"
+
+	git config --global user.email [EMAIL]
+		No quotes above!
+
+Edit your preferred text editor when using Git (Linux/macOS):
+
+	git config --global core.editor [EDITOR NAME]
+
+Edit your preferred text editor when using Git (Windows):
+
+	On a Windows system, if you want to use a different text editor, you must specify
+	the full path to its executable file. This can be different depending on how your
+	editor is packaged.
+
+	In the case of Notepad++, a popular programming editor, you are likely to want to
+	use the 32-bit version, since at the time of writing the 64-bit version doesn’t
+	support all plug-ins. If you are on a 32-bit Windows system, or you have a 64-bit
+	editor on a 64-bit system, you’ll type something like this:
+
+		$ git config --global core.editor "'C:/Program Files/Notepad++/notepad++.exe'
+		multiInst -nosession"
+
+	If you have a 32-bit editor on a 64-bit system, the program will be installed in
+	C:\Program Files (x86):
+
+		$ git config --global core.editor "'C:/Program Files (x86)/Notepad++
+		notepad++.exe' -multiInst -nosession"
+
+Check your current Git settings:
+
+	git config --list
+
+Delete a local repository:
+
+	On Linux/macOS systems, simply delete the directory:
+
+		rm -r [NAME OF LOCAL REPOSITORY]
+
+	On Windows systems:
+
+		Launch File Explorer, locate the folder, delete it
+
+Check on the status of a branch:
+
+	git status
+
+Tracking files in a branch:
+
+	git add [NAME OF FILES]
+		The above line starts tracking for the provided
+		files in a branch
+
+Stop tracking files in a branch:
+
+	git rm --cached [FILE NAMES]
+		Note: if you have also committed a file but have
+		not yet pushed it, you will need to add the "-f"
+		option to force Git to stop tracking the file
+
+Staging vs. Commits:
+
+	The files that Git tracks are automatically added to the
+	"staging area" (are staged) when they are modified, deleted,
+	or added to the local repository. The staging area is a cache
+	of change operations that Git stores in preparation of a write
+	to the remote origin repository.
+
+	Commits are changes that Git writes from the staging area to
+	a remote origin repository.
+
+To undo a commit and keep all files staged:
+
+	git reset --soft HEAD~;
+		In case you just want to undo the commit and change nothing more.
+		This is most often used to make a few changes to your latest commit
+		and/or fix your commit message. Leaves working tree as it was before
+		"reset". "soft" does not touch the index file or the working tree at
+		all (but resets the head to the previous commit). This leaves all your
+		changed files as "Changes to be committed", as git status would put it.
+
+To undo a commit and unstage all files:
+
+	git reset HEAD~;
+		In case you want to undo the last commit and unstage all the files.
+
+or
+
+	git reset --mixed HEAD~;
+		"mixed" will reset the index but not the working tree (i.e., the
+		changed files are preserved but not marked for commit) and reports
+		what has not been updated. This is the default action.
+
+To undo a commit and completely remove all changes:
+
+	git reset --hard HEAD~;
+		The following method will undo the commit and revert all changes
+		so that your state is exactly as it was before you started making
+		changes. "hard" resets the index and working tree. Any changes to
+		tracked files in the working tree since the previous commit are
+		discarded.
+
+Rewrite a commit message:
+
+	git -amend
+
+Push/pull without a password:
+
+	First, generate an SSH key (Linux/macOS only) via the command:
+
+		ssh-keygen -t rsa -b 4096 -C "[YOUR GITHUB EMAIL ADDRESS]"
+			Note: do NOT use a passphrase when this command
+			prompts you for one, simply hit the <ENTER> key
+			BOTH times that you are prompted to provide a
+			passphrase.
+
+	The above command will generate two keys, a public key (".pub" file
+	extension) and a private key. They are stored by default in your
+	"~/.ssh" directory, though this can vary depending on where you
+	generate the keys in your filesystem. If they are not located in
+	your "~/.ssh" directory, look in the directory where you executed 
+	the "ssh-keygen" command for your pair of keys.
+
+	The creator of the repository must go to the repository on GitHub.
+	There will be a "Settings" option located to the far upper right of the
+	repository (it appears a gear wheel). Click on this option.
+
+	You will be directed to an administrative interface for the webpage.
+	On the far left side of the page, look for the phrase "Deploy keys".
+	Click on this option.
+	
+	On the resulting page that appears, click on "Add deploy key". Give a
+	title to the key (use the filename for simplicity, e.g. "id_rsa.pub").
+	Then paste the contents of the public key into the key field.
+
+	Make sure to allow write access to the repository with the SSH key by
+	selecting the "Allow write access" checkbox located beneath the key field.
+	By default, a deployed SSH key for a repository only permits read access
+	(i.e., the key user can only pull, not push to the repository).
+
+	Click "Add key". Note that only keys which are not in use ANYWHERE else on
+	GitHub can be used as deploy keys (i.e., users who have the same SSH keys for
+	their profiles on GitHub cannot also use those keys as a repository deploy
+	key).
+
+	Try pushing. You should no longer need a password to do this.
+
+
+
