@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Libra Component Version</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<link rel="stylesheet" th:href="@{/css/main.css}"
+	href="../../css/main.css" />
+
+
+<style>
+td, th {
+	padding: 8px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	white-space: nowrap;
+}
+
+th:nth-of-type(1n) {
+	background-color: #e0e0e0;
+}
+
+td:nth-of-type(1n) {
+	background-color: #def6fc;
+}
+
+</style>
+
+</head>
+<body>
+
+	<div class="container">
+		<p id="demo"></p>
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>version</th>
+				<th>build-number</th>
+			</tr>
+			<tr th:each="item : ${list}" >
+				<td><a th:href="@{/services(url=${item.get('url')})}"><span th:text="${item.get('name')}"></span></a></td>		
+				<td><span th:text="${item.get('version')}"></span></td>
+				<td><span th:text="${item.get('build-number')}"></span></td>
+			</tr>
+		</table>
+	</div>
+	<!-- /.container -->
+
+</body>
+</html>
