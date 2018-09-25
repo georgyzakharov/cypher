@@ -19,3 +19,4 @@ public interface RemoteApplicationExecutor {
 	TestResponse execute(TestRequest request);
 	
 }
+
