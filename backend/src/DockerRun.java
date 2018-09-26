@@ -15,10 +15,9 @@ Description:
 	absolute file path of the source file. The directory
 	immediately above the source code file is treated
 	as the "team" directory, that is the directory
-	in which the created Dockerfile is stored in
-	and which the program copies into the created
-	Docker container. For example, consider a file
-	with the following path:
+	in which the created Dockerfile is stored and which
+	the program copies into the created Docker container.
+	For example, consider a file with the following path:
 		"/home/cypher/src/foobar.java"
 	The contents of the directory "src/" would be
 	copied into a Docker container at runtime and
