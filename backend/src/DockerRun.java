@@ -41,7 +41,7 @@ import java.io.*;
 public final class DockerRun {
 
 	//'imageTag' is a unique alphanumeric
-	//identified applied to Docker images
+	//identifier applied to Docker images
 	//for simplified reference vs. default
 	//image IDs
 	//
