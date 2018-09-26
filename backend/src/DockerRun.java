@@ -163,7 +163,7 @@ public final class DockerRun {
 		}
 	}
 
-	//Mthod for building a Docker image from a provided
+	//Method for building a Docker image from a provided
 	//source code file path
 	public static boolean buildDockerImage(String source) {
 		try {
@@ -198,7 +198,13 @@ public final class DockerRun {
 			}
 
 		}
-
+		
+		catch (InterruptedException e) {
+			System.out.println("<InterruptedException> thrown!");
+			e.printStackTrace();
+			return "Error!";
+		}
+		
 		catch (IOException e) {
 			errors = new String("<IOException> thrown in 'buildDockerImage()'!");
 			e.printStackTrace();
@@ -255,6 +261,12 @@ public final class DockerRun {
 			}
 		}
 
+		catch (InterruptedException e) {
+			System.out.println("<InterruptedException> thrown!");
+			e.printStackTrace();
+			return "Error!";
+		}
+		
 		catch (IOException e) {
 			System.out.println("<IOException> thrown!");
 			e.printStackTrace();
