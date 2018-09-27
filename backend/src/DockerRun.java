@@ -182,7 +182,7 @@ public final class DockerRun {
 			String s = null;
 			errors = new String();
 			while ((s = stdError.readLine()) != null) {
-				errors = errors + s;
+				errors = errors + s + "\n";
 			}
 
 			//LOGIC PROBLEM: 'if (errors != null || !errors.isEmpty())'
@@ -239,7 +239,7 @@ public final class DockerRun {
 			}
 
 			while ((s = stdError.readLine()) != null) {
-				errors = errors + s;
+				errors = errors + s + "\n";
 			}
 
 			if (errors != null && !errors.isEmpty()) {
