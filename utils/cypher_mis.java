@@ -10,7 +10,7 @@ class DatabaseMGR {
     public static void main(String args[]) {
         int hello;
         boolean goodbye;
-        
+        String goodday;
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection sqlcon = DriverManager.getConnection(url, user, password);
@@ -20,7 +20,13 @@ class DatabaseMGR {
             byte[] desc = { 'A', 'B', 'C' };
             byte[] test = { '1', '2', '3' };
 
-            hello = createProblem(sqlcon, "Hello", desc, test);
+            hello = getProblemId(sqlcon, "Hello");
+            goodday = getProblemName(sqlcon, 21);
+
+            deleteProblem(sqlcon, "Hello");
+
+            System.out.println(hello);
+            System.out.println(goodday);
 
             System.err.println(getTeamName(sqlcon, getTeamId(sqlcon, "dylandd")));
 
@@ -121,8 +127,7 @@ class DatabaseMGR {
     /*
      * Problem Manager
      */
-    public static int createProblem(Connection sqlcon, String problemName, byte[] problemDescription,
-            byte[] problemTestCode) {
+    public static int createProblem(Connection sqlcon, String problemName, byte[] problemDescription, byte[] problemTestCode) {
         PreparedStatement stmt = null;
         Statement nameStmt = null;
         String nameQuery = "INSERT INTO problem(name) VALUES " + "('" + problemName + "');";
@@ -147,6 +152,36 @@ class DatabaseMGR {
         return problemId;
     }
 
+    public static void deleteProblem(Connection sqlcon, String problemName)
+    {
+        Statement stmt = null;
+        String query = "DELETE FROM problem_storage WHERE id = '" + getProblemId(sqlcon,problemName) + "';";
+        try {
+            stmt = sqlcon.createStatement();
+            stmt.executeUpdate(query);
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+        }
+        
+        query = "DELETE FROM problem WHERE name = '" + problemName + "';";
+        try {
+            stmt = sqlcon.createStatement();
+            stmt.executeUpdate(query);
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+        }
+        return;
+    }
+
+    //public static void deleteProblem(Connection sqlcon, String problemId)
+    //{
+
+    //}
+
     public static int getProblemId(Connection sqlcon, String problemName) {
         int problemId = -1;
         Statement stmt = null;
@@ -165,4 +200,22 @@ class DatabaseMGR {
         return problemId;
     }
 
+    public static String getProblemName(Connection sqlcon, int problemId) {
+        String problemName = null;
+        Statement stmt = null;
+        String query = "SELECT name FROM problem WHERE id = " + problemId + ";";
+        try {
+            stmt = sqlcon.createStatement();
+            ResultSet result = stmt.executeQuery(query);
+            result.next();
+            problemName = result.getString("name");
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+        }
+
+        return problemName;
+    }
+    
 }
