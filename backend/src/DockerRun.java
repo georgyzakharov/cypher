@@ -198,13 +198,13 @@ public final class DockerRun {
 			}
 
 		}
-		
+
 		catch (InterruptedException e) {
 			System.out.println("<InterruptedException> thrown!");
 			e.printStackTrace();
-			return "Error!";
+			return false;
 		}
-		
+
 		catch (IOException e) {
 			errors = new String("<IOException> thrown in 'buildDockerImage()'!");
 			e.printStackTrace();
