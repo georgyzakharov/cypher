@@ -37,4 +37,13 @@ public class HomeController {
 		return model;
 	}
 
+/*	@RequestMapping(value = { "/proctor" }, method = RequestMethod.GET)
+	public ModelAndView getProblem() {
+
+		ModelAndView model = new ModelAndView("problem");
+
+		return model;
+	}
+*/
+
 }
