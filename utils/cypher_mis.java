@@ -10,6 +10,7 @@ class DatabaseMGR {
     public static void main(String args[]) {
         int hello;
         boolean goodbye;
+        
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection sqlcon = DriverManager.getConnection(url, user, password);
