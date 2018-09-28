@@ -1,0 +1,61 @@
+//Simple driver class for 'DockerRun' using 'ProgCompSubmission' object
+
+public class DockerRunDriver extends ProgCompSubmission {
+	private String results;
+	private final static int LIMIT = 4;
+
+	public DockerRunDriver(int ProblemNumber, String TeamID, String code, String language) {
+		super(ProblemNumber, TeamID, code, language);
+	}
+
+	public void writeResults(String s) {
+		results = new String(s);
+		return;
+	}
+
+	public String getResults() throws NullPointerException {
+		if (results == null) {
+			throw new NullPointerException();
+		}
+		return results;
+	}
+
+	public static void main(String[] args) {
+
+		DockerRunDriver submission;
+
+		int count;
+		for (count = 0; count < LIMIT; count++) {
+			if (count == 0) {
+				submission = new DockerRunDriver(1, "Luminous", "public class HelloWorld "
+					+ "{\n\tpublic HelloWorld() {\n\t}\n\n\tpublic static void main(String[] args) {"
+					+ "\n\t\tSystem.out.println(\"Hello world from Java!\");\n\t}\n}", "Java");
+			}
+			else if (count == 1) {
+				submission = new DockerRunDriver(1, "Luminous", "#include <stdio.h>\n\n"
+					+ "int main (void) {\n\tprintf(\"\\nHello world from C!\\n\");\n\treturn 0;\n}", "C");
+			}
+			else if (count == 2) {
+				submission = new DockerRunDriver(1, "Luminous", "#include <iostream>\n\n"
+					+ "int main (void) {\n\tstd::cout<<\"\\nHello world from C++!\\n\";\n\treturn 0;\n}", "C++");
+			}
+			else {
+				submission = new DockerRunDriver(1, "Luminous", "#!/usr/bin/env python3\n\n"
+					+ "def func():\n\tprint(\"Hello world from Python!\")\n\nfunc()", "Python");
+			}
+
+			submission.writeResults(DockerRun.compExec(submission));
+
+			try {
+				System.out.println(submission.getResults());
+			}
+			catch (NullPointerException e) {
+				System.out.println(e.toString());
+				e.printStackTrace();
+				break;
+			}
+		}
+
+		return;
+	}
+}
