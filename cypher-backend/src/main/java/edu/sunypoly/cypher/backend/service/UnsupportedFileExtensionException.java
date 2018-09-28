@@ -1,3 +1,5 @@
+package edu.sunypoly.cypher.backend.service;
+
 public class UnsupportedFileExtensionException extends Exception {
 	public UnsupportedFileExtensionException (String errorMessage) {
 		super("Unsupported file extension '" + errorMessage + "'");
