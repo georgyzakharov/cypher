@@ -1,3 +1,6 @@
+package edu.sunypoly.cypher.backend.service;
+import java.io.*;
+
 /*
 Author: Jacob Hill ("ripcord")
 Date of Revision: 09/27/2018
@@ -118,8 +121,6 @@ Future Development:
 	4. Settle on 'toString()' with 'File' objects
 	or on 'getCanonicalPath()'
 */
-
-import java.io.*;
 
 //'final' so as not to extend this class
 public final class DockerRun {
