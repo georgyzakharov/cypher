@@ -3,7 +3,7 @@ package org.cypher.commons;
 import java.util.Arrays;
 
 public class TestRequest {
-
+	private String Fname;
 	private String applicationCode;
 	private AssignmentTest[] assignmentTests;
 	private String language;
@@ -36,6 +36,14 @@ public class TestRequest {
 	public String toString() {
 		return "TestRequest [applicationCode=" + applicationCode + ", assignmentTests="
 				+ Arrays.toString(assignmentTests) + ", language=" + language + "]";
+	}
+
+	public String getFname() {
+		return Fname;
+	}
+
+	public void setFname(String fname) {
+		Fname = fname;
 	}
 
 }

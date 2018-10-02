@@ -1,5 +1,7 @@
 package edu.sunypoly.cypher.backend.service;
 
+import java.util.concurrent.BlockingQueue;
+
 import org.cypher.commons.AssignmentTest;
 import org.cypher.commons.TestRequest;
 import org.cypher.commons.TestResponse;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TestExecutorServiceImpl implements TestExecutorService {
 
+	public static BlockingQueue<Runnable> Submissions;
 
 	@Override
 	public TestResponse execute(TestRequest request) {
@@ -18,6 +21,14 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		
 		
 		//you will have to return your info to me here 
+		
+		ProgCompSubmissionHandler handler = new ProgCompSubmissionHandler(Submissions);
+		
+		ProgCompSubmission sub1 = new ProgCompSubmission(pnum, , "Yeeet", "Yeeeet");
+		Submissions.offer(sub1);
+		
+		
+		
 		return null;
 	}
 }
