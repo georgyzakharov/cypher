@@ -17,6 +17,8 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		//you have access to all the variables that i send to you
 		String code = request.getApplicationCode();
 		String lang = request.getLanguage();
+		int pnum = request.getProgramNumber();
+		String teamId= request.getTeamId();
 		AssignmentTest[] tests = request.getAssignmentTests();
 		
 		
@@ -24,7 +26,7 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		
 		ProgCompSubmissionHandler handler = new ProgCompSubmissionHandler(Submissions);
 		
-		ProgCompSubmission sub1 = new ProgCompSubmission(pnum, , "Yeeet", "Yeeeet");
+		ProgCompSubmission sub1 = new ProgCompSubmission(pnum, teamId, code, lang);
 		Submissions.offer(sub1);
 		
 		

@@ -1,12 +1,36 @@
 package org.cypher.commons;
 
-import java.util.Arrays;
-
 public class TestRequest {
+	private int programNumber;
+	private String teamId;
 	private String Fname;
 	private String applicationCode;
 	private AssignmentTest[] assignmentTests;
 	private String language;
+
+	public int getProgramNumber() {
+		return programNumber;
+	}
+
+	public void setProgramNumber(int programNumber) {
+		this.programNumber = programNumber;
+	}
+
+	public String getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
+	}
+
+	public String getFname() {
+		return Fname;
+	}
+
+	public void setFname(String fname) {
+		Fname = fname;
+	}
 
 	public String getApplicationCode() {
 		return applicationCode;
@@ -30,20 +54,6 @@ public class TestRequest {
 
 	public void setLanguage(String language) {
 		this.language = language;
-	}
-
-	@Override
-	public String toString() {
-		return "TestRequest [applicationCode=" + applicationCode + ", assignmentTests="
-				+ Arrays.toString(assignmentTests) + ", language=" + language + "]";
-	}
-
-	public String getFname() {
-		return Fname;
-	}
-
-	public void setFname(String fname) {
-		Fname = fname;
 	}
 
 }
