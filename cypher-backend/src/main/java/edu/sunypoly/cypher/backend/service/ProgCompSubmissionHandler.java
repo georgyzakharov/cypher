@@ -14,6 +14,12 @@ public class ProgCompSubmissionHandler implements Runnable
 		
 		
 	}
+	public ProgCompSubmission addSubmission(ProgCompSubmission sub)
+	{
+		this.subs.offer(sub);
+		
+		return sub;
+	}
 	
 	public void run() 
 	{
