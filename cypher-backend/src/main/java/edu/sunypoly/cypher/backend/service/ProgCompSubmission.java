@@ -11,11 +11,12 @@ public class ProgCompSubmission implements Serializable, Runnable
 		this.TeamID = TeamID;
 		this.code = code;
 		this.language = language;
+		this.compilationStatus = true;
 	}
 	
 	public void run()
 	{
-				
+		this.result = DockerRun.compExec(this); 
 	}
 	
 	public int ProblemNumber;
@@ -23,6 +24,8 @@ public class ProgCompSubmission implements Serializable, Runnable
 	public String code;
 	public String language;
 	public int score;
+	public String result;
+	public boolean compilationStatus;
 
 	
 	
