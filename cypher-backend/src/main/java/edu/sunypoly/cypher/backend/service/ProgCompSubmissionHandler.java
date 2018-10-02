@@ -5,10 +5,9 @@ import java.util.concurrent.TimeUnit;
 
 public class ProgCompSubmissionHandler implements Runnable
 {
-	public ProgCompSubmissionHandler(BlockingQueue<Runnable> subs) 
+	public ProgCompSubmissionHandler() 
 	{
 		int Cores = Runtime.getRuntime().availableProcessors();
-		this.subs = subs;
 		executor = new ThreadPoolExecutor(Cores, Cores*2, 10, TimeUnit.SECONDS, this.subs);
 		
 		
@@ -43,6 +42,6 @@ public class ProgCompSubmissionHandler implements Runnable
 	
 	
 	private ThreadPoolExecutor executor;
-	private BlockingQueue<Runnable> subs;
+	private static BlockingQueue<Runnable> subs;
 	
 }
