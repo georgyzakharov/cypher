@@ -26,6 +26,7 @@
 
 	<!-- These are the modules that are going to be existent in my parent Project -->
 	<modules>
+		<module>cypher-commons</module>
 		<module>cypher-db</module>
 		<module>cypher-frontend</module>
 		<module>cypher-backend</module>

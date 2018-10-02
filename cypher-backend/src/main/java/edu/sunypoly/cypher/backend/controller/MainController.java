@@ -1,20 +1,28 @@
 package edu.sunypoly.cypher.backend.controller;
 
-import org.springframework.web.bind.annotation.PathVariable;
+import javax.annotation.Resource;
+
+import org.cypher.commons.TestRequest;
+import org.cypher.commons.TestResponse;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.sunypoly.cypher.backend.service.TestExecutorService;
+
+//import edu.sunyit.executor.phython.service.TestExecutorService;
+
 @RestController
-@RequestMapping(method=RequestMethod.GET)
+@RequestMapping(value= {"/tests"},method=RequestMethod.POST)
 public class MainController {
 	
-	//everything 
-	@RequestMapping("/execute/{assignementId}")
-	public void execute(@PathVariable Long assignementId) {
-		// place your code here
-		System.out.println("Place yout code here");
-		System.out.println(assignementId);
+	@Resource private TestExecutorService service;
+
+	@RequestMapping("/execute")
+	public TestResponse execute(@RequestBody TestRequest request) {
+		
+		return service.execute(request);
 	}
 
 } 

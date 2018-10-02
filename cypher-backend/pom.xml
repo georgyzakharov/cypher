@@ -16,6 +16,13 @@
 
 	<dependencies>
 
+		<!-- This is an internal dependencies for common libraries -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>cypher-commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 
 		<!-- Spring dependencies -->
 		<dependency>

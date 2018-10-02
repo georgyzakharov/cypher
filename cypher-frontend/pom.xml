@@ -13,8 +13,15 @@
 	<artifactId>cypher-frontend</artifactId>
 	<packaging>jar</packaging>
 
-
+		
 	<dependencies>
+		<!-- This is an internal dependencies for common libraries -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>cypher-commons</artifactId>
+			<version>${project.version}</version>	
+		</dependency>	
+	
 		<!-- apache dependencies -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
