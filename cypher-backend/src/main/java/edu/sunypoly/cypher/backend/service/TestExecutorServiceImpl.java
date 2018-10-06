@@ -15,6 +15,7 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 	@Override
 	public TestResponse execute(TestRequest request) {
 		//you have access to all the variables that i send to you
+		
 		String code = request.getApplicationCode();
 		String lang = request.getLanguage();
 		int pnum = request.getProgramNumber();
@@ -28,9 +29,16 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 
 		submission.writeResults(DockerRun.compExec(submission));
 
-		/**/
+		/**************/
 		String result = submission.getResults();
 		
-		return null;
+		
+		TestResponse testresponse = new TestResponse();
+		/*
+		 * Here you will have to impliment the conversion of what ever jake return into the (TestResponse)
+		 * 
+		 */
+		
+		return testresponse;
 	}
 }
