@@ -23,13 +23,13 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		
 		
 		//you will have to return your info to me here 
-		
-		ProgCompSubmissionHandler handler = new ProgCompSubmissionHandler(Submissions);
-		
-		ProgCompSubmission sub1 = new ProgCompSubmission(pnum, teamId, code, lang);
-		Submissions.offer(sub1);
-		
-		
+		/**************/
+		DockerRunDriver submission = new DockerRunDriver(pnum, teamId, code, lang);
+
+		submission.writeResults(DockerRun.compExec(submission));
+
+		/**/
+		String result = submission.getResults();
 		
 		return null;
 	}
