@@ -2,7 +2,7 @@ package edu.sunypoly.cypher.db;
 
 import java.sql.*;
 
-class MIS
+public class MIS
 {
     private static final String URL = "jdbc:mysql://localhost/cypher_mis?useSSL=false";
     private static final String USERNAME = "cypher";

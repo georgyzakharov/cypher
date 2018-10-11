@@ -2,7 +2,7 @@ package edu.sunypoly.cypher.db;
 
 import java.sql.*;
 
-class TeamManager
+public class TeamManager
 {
     private static Connection SQLCON = null; 
     public TeamManager(Connection INSQLCON)
