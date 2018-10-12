@@ -15,7 +15,8 @@ public class HomeController {
 	// Spring injection
 	@Resource
 	private ApplicationExecutorService service;
-
+	
+	// Home page with all the UI
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
 	public ModelAndView getHome() {
 
@@ -25,7 +26,7 @@ public class HomeController {
 	}
 
 	
-	@RequestMapping(value = { "/submitions" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/submission" }, method = RequestMethod.POST)
 	public ModelAndView getAnswer(String language, String applicationCode, String test) {
 
 		ModelAndView model = new ModelAndView("answer");
