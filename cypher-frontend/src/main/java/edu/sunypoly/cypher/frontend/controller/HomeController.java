@@ -24,6 +24,7 @@ public class HomeController {
 		return model;
 	}
 
+	
 	@RequestMapping(value = { "/submitions" }, method = RequestMethod.POST)
 	public ModelAndView getAnswer(String language, String applicationCode, String test) {
 
@@ -37,13 +38,19 @@ public class HomeController {
 		return model;
 	}
 
-/*	@RequestMapping(value = { "/proctor" }, method = RequestMethod.GET)
+	/*
+	@RequestMapping(value = { "/proctor" }, method = RequestMethod.GET)
 	public ModelAndView getProblem() {
 
 		ModelAndView model = new ModelAndView("problem");
 
 		return model;
 	}
-*/
+	
+	
+	@RequestMapping(value = {"/post"}, method = RequestMethod.POST)
+	public ModelAndView 
+	
+	 */
 
 }
