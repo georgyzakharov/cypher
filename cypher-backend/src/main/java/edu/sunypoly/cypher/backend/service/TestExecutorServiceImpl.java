@@ -16,10 +16,10 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 	public TestResponse execute(TestRequest request) {
 		//you have access to all the variables that i send to you
 		
-		String code = request.getApplicationCode();
-		String lang = request.getLanguage();
 		int pnum = request.getProgramNumber();
 		String teamId= request.getTeamId();
+		String code = request.getApplicationCode();
+		String lang = request.getLanguage();
 		AssignmentTest[] tests = request.getAssignmentTests();
 		
 		
@@ -33,7 +33,10 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		String result = submission.getResults();
 		
 		
+		
 		TestResponse testresponse = new TestResponse();
+		
+		testresponse.setCompilationDetails(result);
 		/*
 		 * Here you will have to impliment the conversion of what ever jake return into the (TestResponse)
 		 * 
