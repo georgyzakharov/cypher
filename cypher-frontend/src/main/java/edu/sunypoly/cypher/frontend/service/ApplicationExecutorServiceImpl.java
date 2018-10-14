@@ -28,9 +28,13 @@ public class ApplicationExecutorServiceImpl implements ApplicationExecutorServic
 	
 	//Overrides the finction "getResult" from the IMPL
 	@Override
-	public String getResult(String applicationCode, String input) {
+	public String getResult(String langauge, String applicationCode, String input) {
+	
 		TestRequest request = new TestRequest();
 		request.setApplicationCode(applicationCode);
+		request.setLangauge(langauge);
+		
+	
 		AssignmentTest test = new AssignmentTest();
 		test.setTestId(0L);
 		test.setInput(input);
