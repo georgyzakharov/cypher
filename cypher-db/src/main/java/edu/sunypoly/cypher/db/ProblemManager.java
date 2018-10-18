@@ -1,5 +1,3 @@
-package edu.sunypoly.cypher.db;
-
 import java.sql.*;
 
 public class ProblemManager
@@ -47,20 +45,72 @@ public class ProblemManager
  
         return success;
     }
-    
+
+    public boolean update(int problemId, String problemName, byte[] problemDescription, byte[] problemTestCode) throws DoesNotExistException, AlreadyExistsException
+    {
+        boolean success = false;
+        PreparedStatement stmt = null;
+        PreparedStatement fkStatement = null;
+        String nameQuery = "UPDATE problem SET name = ? WHERE id = ?";
+        String storageQuery = "UPDATE problem_storage SET problem_description = ?, problem_test = ? WHERE id = ?";
+        String fk = "SET FOREIGN_KEY_CHECKS=?;";
+
+        if(getName(problemId) != null && getId(problemName) == -1)
+        {
+            try
+            {
+                fkStatement = SQLCON.prepareStatement(fk);
+                fkStatement.setInt(1, 0);
+                fkStatement.executeUpdate();
+
+                stmt = SQLCON.prepareStatement(nameQuery);
+                stmt.setString(1,problemName);
+                stmt.setInt(2,problemId);
+                stmt.executeUpdate();
+
+                stmt = SQLCON.prepareStatement(storageQuery);
+                stmt.setBytes(1, problemDescription);
+                stmt.setBytes(2, problemTestCode);
+                stmt.setInt(3, problemId);
+                stmt.executeUpdate();
+
+                fkStatement = SQLCON.prepareStatement(fk);
+                fkStatement.setInt(1, 1);
+                fkStatement.executeUpdate();
+
+
+            }
+            catch (SQLException e) 
+            {
+                System.err.println("SQLException: " + e.getMessage());
+                System.err.println("SQLState: " + e.getSQLState());
+                System.err.println("VendorError: " + e.getErrorCode());
+            }
+            if(getId(problemName) != -1)
+                success = true;
+        }
+        else if (getName(problemId) == null)
+            throw new DoesNotExistException(problemId + " does not exist!");
+        else 
+            throw new AlreadyExistsException(problemName + " is a used problemName");
+        return success;
+    }
     public boolean delete(String problemName)
     {
         boolean success = false;
         PreparedStatement stmt = null;
-        String query = "DELETE FROM problem_storage WHERE id = ?;";
+        String query = null;
         if(getId(problemName) != -1)
         {
             try 
             {
+                /*
+                query = "DELETE FROM problem_storage WHERE id = ?;";
                 stmt = SQLCON.prepareStatement(query);
                 stmt.setInt(1, getId(problemName));
                 stmt.executeUpdate();
-            
+                */
+
                 query = "DELETE FROM problem WHERE id = ?;";
                 stmt = SQLCON.prepareStatement(query);
                 stmt.setInt(1, getId(problemName));
@@ -84,15 +134,18 @@ public class ProblemManager
     {
         boolean success = false;
         PreparedStatement stmt = null;
-        String query = "DELETE FROM problem_storage WHERE id = ?;";
+        String query = null;
         if(getName(problemId) != null)
         {
             try
             {
+                /*
+                query = "DELETE FROM problem_storage WHERE id = ?;";
                 stmt = SQLCON.prepareStatement(query);
                 stmt.setInt(1, problemId);
                 stmt.executeUpdate();
-        
+                */
+
                 query = "DELETE FROM problem WHERE id = ?;";
                 stmt = SQLCON.prepareStatement(query);
                 stmt.setInt(1, problemId);

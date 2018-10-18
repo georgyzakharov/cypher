@@ -1,5 +1,3 @@
-package edu.sunypoly.cypher.db;
-
 import java.sql.*;
 
 public class SolutionManager
@@ -28,8 +26,6 @@ public class SolutionManager
                 nameStmt.setString(4, language);
                 nameStmt.execute();
 
-                System.out.println("No error to here");
-
                 storageStmt = SQLCON.prepareStatement(storageQuery);
                 storageStmt.setInt(1, getId(solutionName));
                 storageStmt.setBytes(2, solution);
@@ -49,19 +45,72 @@ public class SolutionManager
             throw new AlreadyExistsException(solutionName + "already exists!");
         return success;
     }
+    public boolean update(int solutionId, String solutionName, int teamId, int problemId, String language, int score, byte[] solution) throws DoesNotExistException, AlreadyExistsException 
+    {
+        boolean success = false;
+        PreparedStatement fkStmt = null;
+        PreparedStatement stmt = null;
+        String fk = "SET FOREIGN_KEY_CHECKS=?;";
+        String nameQuery = "UPDATE solution SET name = ?, team_id = ?, problem_id = ?, language = ?, score = ? WHERE id = ?";
+        String storageQuery = "UPDATE solution_storage SET solution = ? WHERE id = ?";
+        if(getName(solutionId) != null && getId(solutionName) == -1)
+        {
+            try
+            {
+                fkStmt = SQLCON.prepareStatement(fk);
+                fkStmt.setInt(1, 0);
+                fkStmt.executeUpdate();
+
+                stmt = SQLCON.prepareStatement(nameQuery);
+                stmt.setString(1, solutionName);
+                stmt.setInt(2, teamId);
+                stmt.setInt(3, problemId);
+                stmt.setString(4, language);
+                stmt.setInt(5, score);
+                stmt.setInt(6, solutionId);
+                stmt.executeUpdate();
+
+                stmt = SQLCON.prepareStatement(storageQuery);
+                stmt.setBytes(1, solution);
+                stmt.setInt(2, solutionId);
+                stmt.executeUpdate();
+
+                fkStmt = SQLCON.prepareStatement(fk);
+                fkStmt.setInt(1, 1);
+                fkStmt.executeUpdate();
+            }
+            catch (SQLException e) 
+            {
+                System.err.println("SQLException: " + e.getMessage());
+                System.err.println("SQLState: " + e.getSQLState());
+                System.err.println("VendorError: " + e.getErrorCode());
+            }
+            if(getId(solutionName) != -1)
+                success = true;
+        }
+        else if(getName(problemId) == null)
+            throw new DoesNotExistException(solutionId + " does not exist!");
+        else
+            throw new AlreadyExistsException(solutionId + " is already a team!");   
+
+        return success;
+
+    }
     public boolean delete(int solutionId)
     {
         boolean success = false;
         PreparedStatement stmt = null;
         String nameQuery = "DELETE FROM solution WHERE id = ?;";
-        String storageQuery = "DELETE FROM solution_storage WHERE id = ?;";
+        //String storageQuery = "DELETE FROM solution_storage WHERE id = ?;";
         if(getName(solutionId) != null)
         {
             try
             {
+                /*
                 stmt = SQLCON.prepareStatement(storageQuery);
                 stmt.setInt(1, solutionId);
                 stmt.executeUpdate();
+                */
 
                 stmt = SQLCON.prepareStatement(nameQuery);
                 stmt.setInt(1, solutionId);
@@ -87,14 +136,16 @@ public class SolutionManager
         boolean success = false;
         PreparedStatement stmt = null;
         String nameQuery = "DELETE FROM solution WHERE id = ?;";
-        String storageQuery = "DELETE FROM solution_storage WHERE id = ?;";
+        //String storageQuery = "DELETE FROM solution_storage WHERE id = ?;";
         if(getId(solutionName) != -1)
         {
             try
             {
+                /*
                 stmt = SQLCON.prepareStatement(storageQuery);
                 stmt.setInt(1, getId(solutionName));
                 stmt.executeUpdate();
+                */
 
                 stmt = SQLCON.prepareStatement(nameQuery);
                 stmt.setInt(1, getId(solutionName));
@@ -102,15 +153,16 @@ public class SolutionManager
             }
             catch (SQLException e)
             {
-                /*
+                
                 System.err.println("SQLException: " + e.getMessage());
                 System.err.println("SQLState: " + e.getSQLState());
                 System.err.println("VendorError: " + e.getErrorCode());
-                */
+                
             }
+            
             if(getId(solutionName) == -1)
                 success = true;
-
+    
         }
         return success;
     }
@@ -342,11 +394,7 @@ public class SolutionManager
         }
         catch (SQLException e) 
         {
-            /*
-            System.err.println("SQLException: " + e.getMessage());
-            System.err.println("SQLState: " + e.getSQLState());
-            System.err.println("VendorError: " + e.getErrorCode());
-            */
+
         }
         return solutionName;
     }
@@ -367,14 +415,8 @@ public class SolutionManager
         }
         catch (SQLException e) 
         {
-            /*
-            System.err.println("SQLException: " + e.getMessage());
-            System.err.println("SQLState: " + e.getSQLState());
-            System.err.println("VendorError: " + e.getErrorCode());
-            */
+
         }
-        
-        
         return solutionId;
     }
 
