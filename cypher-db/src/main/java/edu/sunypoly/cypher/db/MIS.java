@@ -3,8 +3,8 @@ import java.sql.*;
 public class MIS
 {
     private static final String URL = "jdbc:mysql://localhost/cypher_db?useSSL=false";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "DamienBro";
+    private static final String USERNAME = "cypher";
+    private static final String PASSWORD = "cypher";
     public ProblemManager Problem = null;
     public SolutionManager Solution = null;
     public TeamManager Team = null;

@@ -4,11 +4,10 @@ public class TeamManager
 {
     private static Connection SQLCON = null; 
     private static final int MAX_TEAM_NAME_LENGTH = 50;
+
     public TeamManager(Connection INSQLCON)
     {
         SQLCON = INSQLCON;
-        if(SQLCON == null)
-            System.err.println("THIS IS IT");
     }
 
     public boolean create(String teamName) throws AlreadyExistsException, NullInputException, InvalidDataException
