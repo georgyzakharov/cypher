@@ -15,18 +15,15 @@ import edu.sunypoly.cypher.backend.service.TestExecutorService;
 //import edu.sunyit.executor.phython.service.TestExecutorService;
 
 @RestController
-@RequestMapping(value= {"/tests"},method=RequestMethod.POST)
-public class MainController
-{
-	@Resource private TestExecutorService service;
+@RequestMapping(value = { "/tests" }, method = RequestMethod.POST)
+public class MainController {
+	@Resource
+	private TestExecutorService service;
 
 	@RequestMapping("/execute")
-	public TestResponse execute(@RequestBody TestRequest request)
-	{
-		
-		
+	public TestResponse execute(@RequestBody TestRequest request) {
+
 		return service.execute(request);
 	}
-	 private ProgCompSubmissionHandler handler;
 
-} 
+}

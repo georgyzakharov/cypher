@@ -2,11 +2,11 @@ package edu.sunypoly.cypher.frontend.service;
 
 import javax.annotation.PostConstruct;
 
+import org.cypher.commons.AssignmentTest;
+import org.cypher.commons.TestRequest;
+import org.cypher.commons.TestResponse;
 import org.springframework.stereotype.Service;
 
-import edu.sunypoly.cypher.frontend.domain.AssignmentTest;
-import edu.sunypoly.cypher.frontend.domain.TestRequest;
-import edu.sunypoly.cypher.frontend.domain.TestResponse;
 import edu.sunypoly.cypher.frontend.remote.RemoteApplicationExecutor;
 import si.mazi.rescu.RestProxyFactory;
 
@@ -28,11 +28,11 @@ public class ApplicationExecutorServiceImpl implements ApplicationExecutorServic
 	
 	//Overrides the finction "getResult" from the IMPL
 	@Override
-	public String getResult(String langauge, String applicationCode, String input) {
+	public String getResult(String language, String applicationCode, String input) {
 	
 		TestRequest request = new TestRequest();
 		request.setApplicationCode(applicationCode);
-		request.setLangauge(langauge);
+		request.setLanguage(language);
 		
 	
 		AssignmentTest test = new AssignmentTest();

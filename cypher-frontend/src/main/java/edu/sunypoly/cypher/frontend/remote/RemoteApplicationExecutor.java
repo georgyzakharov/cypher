@@ -5,8 +5,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import edu.sunypoly.cypher.frontend.domain.TestRequest;
-import edu.sunypoly.cypher.frontend.domain.TestResponse;
+import org.cypher.commons.TestRequest;
+import org.cypher.commons.TestResponse;
 
 @Path("/tests")
 public interface RemoteApplicationExecutor {
