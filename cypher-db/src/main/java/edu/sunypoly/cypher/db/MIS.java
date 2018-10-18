@@ -1,4 +1,7 @@
-import java.sql.*;
+package edu.sunypoly.cypher.db;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class MIS
 {

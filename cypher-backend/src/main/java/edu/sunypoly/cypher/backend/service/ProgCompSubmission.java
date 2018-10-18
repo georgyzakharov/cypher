@@ -1,5 +1,5 @@
 package edu.sunypoly.cypher.backend.service;
-import java.io.*;
+import java.io.Serializable;
 
 public class ProgCompSubmission implements Serializable, Runnable
 {	
