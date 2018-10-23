@@ -1,9 +1,11 @@
+package edu.sunypoly.cypher.db;
+
 import java.io.File;
 import java.nio.file.Files;
 
 public class Driver
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws AlreadyExistsException, NullInputException, InvalidDataException
     {
         MIS Manager = new MIS("jdbc:mysql://localhost/cypher_db?useSSL=false", "root", "DamienBro");
         File INproblemDesc = new File("ElvisDesc.txt");
@@ -12,6 +14,9 @@ public class Driver
         byte[] problemDesc = null;
         byte[] problemTest = null;
         byte[] solution = null;
+        
+        Manager.Team.create("BestTeam#1");
+        
         
         try
         {

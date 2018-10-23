@@ -1,3 +1,5 @@
+package edu.sunypoly.cypher.db;
+
 import java.sql.*;
 
 public class ProblemManager
