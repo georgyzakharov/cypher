@@ -15,7 +15,7 @@ public class Driver
         byte[] problemTest = null;
         byte[] solution = null;
         
-        Manager.Team.create("BestTeam#1");
+        
         
         
         try
