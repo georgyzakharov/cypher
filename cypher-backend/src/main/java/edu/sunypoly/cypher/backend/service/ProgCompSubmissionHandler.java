@@ -14,13 +14,12 @@ public class ProgCompSubmissionHandler implements Runnable
 		subs = new LinkedBlockingQueue<Runnable>();
 		int Cores = Runtime.getRuntime().availableProcessors();
 		
-		executor = new ThreadPoolExecutor(Cores, Cores*2, 10, TimeUnit.SECONDS, this.subs);	
-		
+		executor = new ThreadPoolExecutor(Cores, Cores*2, 10, TimeUnit.SECONDS, ProgCompSubmissionHandler.subs);	
 	}
 	
 	public ProgCompSubmission addSubmission(ProgCompSubmission sub)
 	{
-		this.subs.offer(sub);
+		ProgCompSubmissionHandler.subs.offer(sub);
 
 		return sub;
 	}
