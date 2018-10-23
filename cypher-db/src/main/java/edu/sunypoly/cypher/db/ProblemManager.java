@@ -1,27 +1,45 @@
-package edu.sunypoly.cypher.db;
-
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class ProblemManager
 {
     private static Connection SQLCON = null; 
+    private static final int MAX_PROBLEM_NAME_LENGTH = 50;
+    private static final int LONGBLOB_MAX_SIZE = 2000000000; //2GB
+
     public ProblemManager(Connection INSQLCON)
     {
         SQLCON = INSQLCON;
     }
 
     /* Problem Manager */
-    public boolean create(String problemName, byte[] problemDescription, byte[] problemTestCode) throws AlreadyExistsException
+    public boolean create(String problemName, byte[] problemDescription, byte[] problemTestCode) throws AlreadyExistsException, NullInputException, InvalidDataException
     {
         boolean success = false;
         PreparedStatement stmt = null;
         PreparedStatement nameStmt = null;
         String nameQuery = "INSERT INTO problem(name) VALUES (?);";
         String storageQuery = "INSERT INTO problem_storage VALUES (?, ?, ?)";
+        
+        //no problemName provided
+        if(problemName == null)
+            throw new NullInputException("Problem must have a name!");
+        //empty problemname string provided
+            else if(problemName.isEmpty())
+            throw new InvalidDataException("Problem name cannot be an empty string!");
+        //if problemname is too long, truncate
+        else if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
+            problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
+        
+    
+        if(problemDescription == null || problemDescription.length == 0)
+            throw new InvalidDataException("Problem must have a description!");
+        else if(problemDescription.length > LONGBLOB_MAX_SIZE)
+            throw new InvalidDataException("Description file too large, Max file size is 2GB");
+        if(problemTestCode == null || problemTestCode.length == 0)
+            throw new InvalidDataException("Problem must have Test Code Uploaded alongside it!");
+        else if(problemTestCode.length > LONGBLOB_MAX_SIZE)
+            throw new InvalidDataException("Test Code file too large, Max file size is 2GB");
+        
         if(getId(problemName) == -1)
         {
             try 
@@ -52,7 +70,7 @@ public class ProblemManager
         return success;
     }
 
-    public boolean update(int problemId, String problemName, byte[] problemDescription, byte[] problemTestCode) throws DoesNotExistException, AlreadyExistsException
+    public boolean update(int problemId, String problemName, byte[] problemDescription, byte[] problemTestCode) throws DoesNotExistException, AlreadyExistsException, NullInputException, InvalidDataException
     {
         boolean success = false;
         PreparedStatement stmt = null;
@@ -60,6 +78,24 @@ public class ProblemManager
         String nameQuery = "UPDATE problem SET name = ? WHERE id = ?";
         String storageQuery = "UPDATE problem_storage SET problem_description = ?, problem_test = ? WHERE id = ?";
         String fk = "SET FOREIGN_KEY_CHECKS=?;";
+
+        if(problemName == null)
+            throw new NullInputException("Problem must have a name!");
+        //empty problemname string provided
+            else if(problemName.isEmpty())
+            throw new InvalidDataException("Problem name cannot be an empty string!");
+        //if problemname is too long, truncate
+        else if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
+            problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
+        
+        if(problemDescription == null || problemDescription.length == 0)
+            throw new InvalidDataException("Problem must have a description!");
+        else if(problemDescription.length > LONGBLOB_MAX_SIZE)
+            throw new InvalidDataException("Description file too large, Max file size is 2GB");
+        if(problemTestCode == null || problemTestCode.length == 0)
+            throw new InvalidDataException("Problem must have Test Code Uploaded alongside it!");
+        else if(problemTestCode.length > LONGBLOB_MAX_SIZE)
+            throw new InvalidDataException("Test Code file too large, Max file size is 2GB");
 
         if(getName(problemId) != null && getId(problemName) == -1)
         {
@@ -110,26 +146,12 @@ public class ProblemManager
         {
             try 
             {
-                /*
-                query = "DELETE FROM problem_storage WHERE id = ?;";
-                stmt = SQLCON.prepareStatement(query);
-                stmt.setInt(1, getId(problemName));
-                stmt.executeUpdate();
-                */
-
                 query = "DELETE FROM problem WHERE id = ?;";
                 stmt = SQLCON.prepareStatement(query);
                 stmt.setInt(1, getId(problemName));
                 stmt.executeUpdate();
             } 
-            catch (SQLException e) 
-            {
-                /*
-                System.err.println("SQLException: " + e.getMessage());
-                System.err.println("SQLState: " + e.getSQLState());
-                System.err.println("VendorError: " + e.getErrorCode());
-                */
-            }
+            catch (SQLException e) {}
             if(getId(problemName) == -1)
                 success = true;
         }
@@ -145,6 +167,7 @@ public class ProblemManager
         {
             try
             {
+                //DEPRECIATED, DATABASE NOW UPDATES THIS INTERNALLY
                 /*
                 query = "DELETE FROM problem_storage WHERE id = ?;";
                 stmt = SQLCON.prepareStatement(query);
@@ -157,14 +180,7 @@ public class ProblemManager
                 stmt.setInt(1, problemId);
                 stmt.executeUpdate(query);
             }
-            catch(SQLException e)
-            {
-                /*
-                System.err.println("SQLException: " + e.getMessage());
-                System.err.println("SQLState: " + e.getSQLState());
-                System.err.println("VendorError: " + e.getErrorCode());
-                */
-            }
+            catch(SQLException e) {}
             if(getName(problemId) == null)
                 success = true;
         }
@@ -176,22 +192,16 @@ public class ProblemManager
         int problemId = -1;
         PreparedStatement stmt = null;
         String query = "SELECT id FROM problem WHERE name = ?;";
-        try 
-        {
-            stmt = SQLCON.prepareStatement(query);
-            stmt.setString(1, problemName);
-            ResultSet result = stmt.executeQuery();
-            result.next();
-            problemId = result.getInt("id");
-        } 
-        catch (SQLException e) 
-        {
-            /*
-            System.err.println("SQLException: " + e.getMessage());
-            System.err.println("SQLState: " + e.getSQLState());
-            System.err.println("VendorError: " + e.getErrorCode());
-            */
-        }
+        if(problemName != null)
+            try 
+            {
+                stmt = SQLCON.prepareStatement(query);
+                stmt.setString(1, problemName);
+                ResultSet result = stmt.executeQuery();
+                result.next();
+                problemId = result.getInt("id");
+            } 
+            catch (SQLException e) {}
         return problemId;
     }
     
@@ -200,20 +210,16 @@ public class ProblemManager
         String problemName = null;
         PreparedStatement stmt = null;
         String query = "SELECT name FROM problem WHERE id = ?;";
-        try 
-        {
-            stmt = SQLCON.prepareStatement(query);
-            stmt.setInt(1, problemId);
-            ResultSet result = stmt.executeQuery();
-            result.next();
-            problemName = result.getString("name");
-        } 
-        catch (SQLException e) 
-        {
-            System.err.println("SQLException: " + e.getMessage());
-            System.err.println("SQLState: " + e.getSQLState());
-            System.err.println("VendorError: " + e.getErrorCode());
-        }
+        if(problemId != -1)
+            try 
+            {
+                stmt = SQLCON.prepareStatement(query);
+                stmt.setInt(1, problemId);
+                ResultSet result = stmt.executeQuery();
+                result.next();
+                problemName = result.getString("name");
+            } 
+            catch (SQLException e) {}
         return problemName;
     }
 
@@ -222,20 +228,16 @@ public class ProblemManager
         byte[] problemDescription = null;
         PreparedStatement stmt = null;
         String query = "SELECT problem_description FROM problem_storage WHERE id = ?;";
-        try
-        {
-            stmt = SQLCON.prepareStatement(query);
-            stmt.setInt(1, problemId);
-            ResultSet result = stmt.executeQuery();
-            result.next();
-            problemDescription = result.getBytes("problem_description");
-        } 
-        catch (SQLException e) 
-        {
-            System.err.println("SQLException: " + e.getMessage());
-            System.err.println("SQLState: " + e.getSQLState());
-            System.err.println("VendorError: " + e.getErrorCode());
-        }
+        if(getName(problemId) != null)
+            try
+            {
+                stmt = SQLCON.prepareStatement(query);
+                stmt.setInt(1, problemId);
+                ResultSet result = stmt.executeQuery();
+                result.next();
+                problemDescription = result.getBytes("problem_description");
+            } 
+            catch (SQLException e) {}
         return problemDescription;
     }
 
@@ -244,20 +246,16 @@ public class ProblemManager
         byte[] problemDescription = null;
         PreparedStatement stmt = null;
         String query = "SELECT problem_description FROM problem_storage WHERE id = ?;";
-        try
-        {
-            stmt = SQLCON.prepareStatement(query);
-            stmt.setInt(1, getId(problemName));
-            ResultSet result = stmt.executeQuery();
-            result.next();
-            problemDescription = result.getBytes("problem_description");
-        } 
-        catch (SQLException e) 
-        {
-            System.err.println("SQLException: " + e.getMessage());
-            System.err.println("SQLState: " + e.getSQLState());
-            System.err.println("VendorError: " + e.getErrorCode());
-        }
+        if(getId(problemName) != -1)
+            try
+            {
+                stmt = SQLCON.prepareStatement(query);
+                stmt.setInt(1, getId(problemName));
+                ResultSet result = stmt.executeQuery();
+                result.next();
+                problemDescription = result.getBytes("problem_description");
+            } 
+            catch (SQLException e) {}
         return problemDescription;
     }
     
@@ -266,20 +264,16 @@ public class ProblemManager
         byte[] problemTestCode = null;
         PreparedStatement stmt = null;
         String query = "SELECT problem_test FROM problem_storage WHERE id = ?;";
-        try
-        {
-            stmt = SQLCON.prepareStatement(query);
-            stmt.setInt(1, problemId);
-            ResultSet result = stmt.executeQuery();
-            result.next();
-            problemTestCode = result.getBytes("problem_test");
-        } 
-        catch (SQLException e) 
-        {
-            System.err.println("SQLException: " + e.getMessage());
-            System.err.println("SQLState: " + e.getSQLState());
-            System.err.println("VendorError: " + e.getErrorCode());
-        }
+        if(getName(problemId) != null)
+            try
+            {
+                stmt = SQLCON.prepareStatement(query);
+                stmt.setInt(1, problemId);
+                ResultSet result = stmt.executeQuery();
+                result.next();
+                problemTestCode = result.getBytes("problem_test");
+            } 
+            catch (SQLException e) {}
         return problemTestCode;
     }
 
@@ -288,20 +282,16 @@ public class ProblemManager
         byte[] problemTestCode = null;
         PreparedStatement stmt = null;
         String query = "SELECT problem_test FROM problem_storage WHERE id = ?;";
-        try
-        {
-            stmt = SQLCON.prepareStatement(query);
-            stmt.setInt(1, getId(problemName));
-            ResultSet result = stmt.executeQuery();
-            result.next();
-            problemTestCode = result.getBytes("problem_test");
-        } 
-        catch (SQLException e) 
-        {
-            System.err.println("SQLException: " + e.getMessage());
-            System.err.println("SQLState: " + e.getSQLState());
-            System.err.println("VendorError: " + e.getErrorCode());
-        }
+        if(getId(problemName) != -1)
+            try
+            {
+                stmt = SQLCON.prepareStatement(query);
+                stmt.setInt(1, getId(problemName));
+                ResultSet result = stmt.executeQuery();
+                result.next();
+                problemTestCode = result.getBytes("problem_test");
+            } 
+            catch (SQLException e) {}
         return problemTestCode;
     }
 
