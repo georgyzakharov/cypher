@@ -184,7 +184,8 @@ public class DockerManager {
 			String errorMessage = new String();
 			String s = null;
 
-			pb.command("docker", "version");
+			//pb.command("docker", "version");
+			pb.command("/usr/local/bin/docker", "version");
 
 			Process p = pb.start();
 
