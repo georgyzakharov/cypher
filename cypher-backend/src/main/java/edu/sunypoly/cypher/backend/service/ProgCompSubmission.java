@@ -16,7 +16,25 @@ public class ProgCompSubmission implements Serializable, Runnable
 	
 	public void run()
 	{
-		this.result = DockerRun.compExec(this); 
+		DockerSandbox sandbox = new DockerSandbox(this);
+		if (DockerManager.testDockerDaemon()) {
+			if (this.language.equalsIgnoreCase("python")) {
+				result = sandbox.execute().result;
+			}
+			else {
+				if (sandbox.compile()) {
+					result = sandbox.execute().result;
+				}
+				else {
+					result = sandbox.getSubmission().result;
+				}
+			}
+		}
+		else {
+			System.err.println("<System(Cypher)> Error: Docker daemon is not running. Terminating execution.");
+			result = null;
+		}
+		//this.result = DockerRun.compExec(this); 
 	}
 	
 	public int ProblemNumber;
