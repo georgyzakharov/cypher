@@ -1,0 +1,19 @@
+To run the Cypher backend (which depends on Docker) in Eclipse IDE on macOS, launch Eclipse IDE from the Terminal in macOS
+with the following command: 'open -a "Eclipse" &'. This enables Eclipse to have access to the path and system variables
+(e.g. "/usr/bin/local/docker" as returned by "docker"). Currently there is no fix for this issue other than what is specified
+in this document. Link below is the source of this fix (user with solution is "matt broekhuis"). The solution is pasted below:
+
+/*****************************/
+
+I opened from macOS terminal like this.
+open -a "IntelliJ IDEA" &
+
+Then you get all the path variables in Intellij. My build worked fine then.
+
+You will then have to open intellij this way every time. Perhaps there's a way to get a shortcut in the dock to run this command, but I've not done that research yet
+
+Check here for more info http://depressiverobot.com/2016/02/05/intellij-path.html
+
+/*****************************/
+
+https://github.com/Transmode/gradle-docker/issues/65
