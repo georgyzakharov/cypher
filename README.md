@@ -49,7 +49,7 @@ languages:
  ### Memo from the Cypher DevTeam
 
 Cypher is an open-source project to which any individual may contribute. The
-ultimate goal of Cypher as incepted by its original developers remains unchanged
+ultimate goal of Cypher as envisioned by its original developers remains unchanged
 despite years of revision and iterative production: to provide a simple, effective,
 timely and modular programming competition management system. Most of all, the
 purpose of Cypher is to have fun!
