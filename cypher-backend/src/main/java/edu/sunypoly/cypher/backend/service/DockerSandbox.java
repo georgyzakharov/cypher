@@ -19,57 +19,6 @@ public class DockerSandbox {
 		path = null;
 	}
 
-	/*
-	//Checks if Docker is running
-	public boolean testDockerDaemon() {
-		try {
-			ProcessBuilder pb = new ProcessBuilder();
-			String errorMessage = new String();
-			String s = null;
-
-			pb.command("docker", "version");
-
-			Process p = pb.start();
-
-			BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-			while ((s = stdErr.readLine()) != null) {
-				errorMessage = errorMessage + s;
-			}
-
-			if ((errorMessage != null) && (!errorMessage.isEmpty())) {
-				stdErr.close();
-				p.waitFor();
-				p.destroy();
-				System.err.println("<System(Cypher)> " + errorMessage);
-			}
-			else {
-				if (stdErr != null) {
-					stdErr.close();
-				}
-				p.waitFor();
-				p.destroy();
-				return true;
-			}
-		}
-
-		catch (InterruptedException e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-		catch (Exception e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-		
-		return false;
-	}
-	*/
-
 	//Creates a temporary file in which to write and copy a competitor's submission code
 	public File writeTmpFile() {
 		try {
