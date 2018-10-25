@@ -8,7 +8,7 @@ Cypher permits three types of users: competitors, judges and audience members.
 The system also incorporates a system administrator account. Competitors can
 represent teams or individuals.
 
-Currently, Cypher is comprised of a [frontend](cypher/cypher-frontend/src/main/java/edu/sunypoly/cypher/frontend) and a [backend](cypher/cypher-backend/src/main/java/edu/sunypoly/cypher/backend)
+Currently, Cypher is comprised of a [frontend](cypher-frontend/src/main/java/edu/sunypoly/cypher/frontend) and a [backend](cypher-backend/src/main/java/edu/sunypoly/cypher/backend)
 component.
 
 ## Frontend
