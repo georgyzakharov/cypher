@@ -1,0 +1,17 @@
+Error:
+
+" Error: A JNI error has occurred, please check your installation 
+and try again Exception in thread "main" 
+java.lang.UnsupportedClassVersionError "
+
+Fix:
+
+Update the entire Maven project
+
+1. Right-click on "cypher-master"
+2. Go to "Maven" (bottom of menu)
+3. Update -> Select all
+
+Source:
+
+Myself (personal experience)
