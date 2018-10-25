@@ -37,6 +37,7 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		ProgCompSubmission submission = new ProgCompSubmission(pnum, teamId, code, lang);
 		
 		submission.run();
+		/**************/
 		
 		TestResponse testresponse = new TestResponse();
 		AssignmentTestResult testResult = new AssignmentTestResult();
