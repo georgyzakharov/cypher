@@ -1,3 +1,5 @@
+package edu.sunypoly.cypher.db;
+
 /*
 Author: Austin Monson(Sannity)
 
@@ -17,6 +19,7 @@ Specification:
     Mis(String sqlUrl, String sqlUsername, String sqlPassword)
         - creates the SQL connection and sends that to the sub managers
 */
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 

@@ -5,7 +5,7 @@ import java.nio.file.Files;
 
 public class Driver {
 	public static void main(String[] args) throws AlreadyExistsException, NullInputException, InvalidDataException {
-		MIS Manager = new MIS("jdbc:mysql://localhost/cypher_db?useSSL=false", "root", "DamienBro");
+		Mis Manager = new Mis("jdbc:mysql://localhost/cypher_db?useSSL=false", "root", "DamienBro");
 		File INproblemDesc = new File("ElvisDesc.txt");
 		File INproblemTest = new File("ElvisTest.txt");
 		File INsolution = new File("SampleSolution.txt");

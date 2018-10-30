@@ -1,5 +1,8 @@
+package edu.sunypoly.cypher.db;
+
 /*
 Author: Austin Monson(Sannity)
+
 
 Date of Last Revision: 10/30/2018
 
@@ -15,6 +18,7 @@ Description: The manager that manages the problems in the cypher
 Specification: 
     ---
 */
+
 import java.sql.*;
 
 public class ProblemManager
