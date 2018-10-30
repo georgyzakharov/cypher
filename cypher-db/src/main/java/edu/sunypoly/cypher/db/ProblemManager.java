@@ -1,5 +1,24 @@
 package edu.sunypoly.cypher.db;
 
+/*
+Author: Austin Monson(Sannity)
+
+
+Date of Last Revision: 10/30/2018
+
+Class: CS 370
+    Group Members: Dylan, Jacob, Georgy
+
+Description: The manager that manages the problems in the cypher 
+    software management suite.
+
+    The problem manager can be used in this fashion:
+        [Mis Manager].[Problem-Manager].---;
+
+Specification: 
+    ---
+*/
+
 import java.sql.*;
 
 public class ProblemManager
@@ -29,7 +48,7 @@ public class ProblemManager
             else if(problemName.isEmpty())
             throw new InvalidDataException("Problem name cannot be an empty string!");
         //if problemname is too long, truncate
-        else if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
+        if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
             problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
         
     
@@ -87,7 +106,7 @@ public class ProblemManager
             else if(problemName.isEmpty())
             throw new InvalidDataException("Problem name cannot be an empty string!");
         //if problemname is too long, truncate
-        else if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
+        if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
             problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
         
         if(problemDescription == null || problemDescription.length == 0)
@@ -96,7 +115,7 @@ public class ProblemManager
             throw new InvalidDataException("Description file too large, Max file size is 2GB");
         if(problemTestCode == null || problemTestCode.length == 0)
             throw new InvalidDataException("Problem must have Test Code Uploaded alongside it!");
-        else if(problemTestCode.length > LONGBLOB_MAX_SIZE)
+        if(problemTestCode.length > LONGBLOB_MAX_SIZE)
             throw new InvalidDataException("Test Code file too large, Max file size is 2GB");
 
         if(getName(problemId) != null && getId(problemName) == -1)
@@ -144,6 +163,9 @@ public class ProblemManager
         boolean success = false;
         PreparedStatement stmt = null;
         String query = null;
+        //if problemname is too long, truncate
+        if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
+            problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
         if(getId(problemName) != -1)
         {
             try 
@@ -194,6 +216,9 @@ public class ProblemManager
         int problemId = -1;
         PreparedStatement stmt = null;
         String query = "SELECT id FROM problem WHERE name = ?;";
+        //if problemname is too long, truncate
+        if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
+            problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
         if(problemName != null)
             try 
             {
@@ -248,6 +273,9 @@ public class ProblemManager
         byte[] problemDescription = null;
         PreparedStatement stmt = null;
         String query = "SELECT problem_description FROM problem_storage WHERE id = ?;";
+        //if problemname is too long, truncate
+        if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
+            problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
         if(getId(problemName) != -1)
             try
             {
@@ -284,6 +312,9 @@ public class ProblemManager
         byte[] problemTestCode = null;
         PreparedStatement stmt = null;
         String query = "SELECT problem_test FROM problem_storage WHERE id = ?;";
+        //if problemname is too long, truncate
+        if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
+            problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
         if(getId(problemName) != -1)
             try
             {

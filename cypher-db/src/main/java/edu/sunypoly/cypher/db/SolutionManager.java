@@ -209,6 +209,10 @@ public class SolutionManager
         PreparedStatement stmt = null;
         String nameQuery = "DELETE FROM solution WHERE id = ?;";
         //String storageQuery = "DELETE FROM solution_storage WHERE id = ?;";
+
+        // too long, truncate
+        if(solutionName.length() > MAX_SOLUTION_NAME_LENGTH)
+            solutionName = solutionName.substring(0, MAX_SOLUTION_NAME_LENGTH);
         if(getId(solutionName) != -1)
         {
             try
@@ -244,6 +248,10 @@ public class SolutionManager
         byte[] solution = null;
         PreparedStatement stmt = null;
         String query = "SELECT solution FROM solution_storage WHERE name = ?;";
+        
+        // too long, truncate
+        if(solutionName.length() > MAX_SOLUTION_NAME_LENGTH)
+            solutionName = solutionName.substring(0, MAX_SOLUTION_NAME_LENGTH);
         if(getId(solutionName) != -1)
             try
             {
@@ -289,6 +297,10 @@ public class SolutionManager
         int score = -1;
         PreparedStatement stmt = null;
         String query = "SELECT score FROM solution WHERE name = ?;";
+
+        // too long, truncate
+        if(solutionName.length() > MAX_SOLUTION_NAME_LENGTH)
+            solutionName = solutionName.substring(0, MAX_SOLUTION_NAME_LENGTH);
         if(getId(solutionName) != -1)
             try
             {
@@ -333,6 +345,10 @@ public class SolutionManager
         String language = null;
         PreparedStatement stmt = null;
         String query = "SELECT language FROM solution WHERE name = ?;";
+
+        // too long, truncate
+        if(solutionName.length() > MAX_SOLUTION_NAME_LENGTH)
+            solutionName = solutionName.substring(0, MAX_SOLUTION_NAME_LENGTH);
         if(getId(solutionName) != -1)
             try
             {
@@ -399,6 +415,10 @@ public class SolutionManager
         int problemId = -1;
         PreparedStatement stmt = null;
         String query = "SELECT problem_id FROM solution WHERE name = ?;";
+
+        // too long, truncate
+        if(solutionName.length() > MAX_SOLUTION_NAME_LENGTH)
+            solutionName = solutionName.substring(0, MAX_SOLUTION_NAME_LENGTH);
         if(getId(solutionName) != -1)
             try
             {
@@ -421,6 +441,10 @@ public class SolutionManager
         int teamId = -1;
         PreparedStatement stmt = null;
         String query = "SELECT team_id FROM solution WHERE name = ?;";
+
+        // too long, truncate
+        if(solutionName.length() > MAX_SOLUTION_NAME_LENGTH)
+            solutionName = solutionName.substring(0, MAX_SOLUTION_NAME_LENGTH);
         if(getId(solutionName) != -1)
             try
             {
@@ -487,6 +511,10 @@ public class SolutionManager
         int solutionId = -1;
         PreparedStatement stmt = null;
         String query = "SELECT id FROM solution WHERE name = ?;";
+
+        // too long, truncate
+        if(solutionName.length() > MAX_SOLUTION_NAME_LENGTH)
+            solutionName = solutionName.substring(0, MAX_SOLUTION_NAME_LENGTH);
         if(solutionName != null)
             try
             {
