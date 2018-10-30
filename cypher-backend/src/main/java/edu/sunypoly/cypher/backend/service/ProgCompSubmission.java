@@ -14,7 +14,7 @@ public class ProgCompSubmission implements Serializable, Runnable
 		this.compilationStatus = true;
 		this.threadWait = true;
 	}
-	
+		
 	public void run()
 	{
 		DockerSandbox sandbox = new DockerSandbox(this);

@@ -1,5 +1,6 @@
 package edu.sunypoly.cypher.backend.service;
 import java.util.concurrent.BlockingQueue;
+import java.lang.Thread;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -10,13 +11,20 @@ public class ProgCompSubmissionHandler implements Runnable
 	{
 		subs = new LinkedBlockingQueue<Runnable>();
 		int Cores = Runtime.getRuntime().availableProcessors();
-		
-		executor = new ThreadPoolExecutor(Cores, Cores*2, 10, TimeUnit.SECONDS, ProgCompSubmissionHandler.subs);	
+		this.thread = new Thread(this);
+		this.stopthread = false;
+		executor = new ThreadPoolExecutor(Cores, Cores*2, 10, TimeUnit.SECONDS, this.subs);	
+		this.thread.start();
+	}
+	
+	public void close() 
+	{
+		stopthread = true;
 	}
 	
 	public ProgCompSubmission addSubmission(ProgCompSubmission sub)
 	{
-		ProgCompSubmissionHandler.subs.offer(sub);
+		this.subs.offer(sub);
 		while(sub.threadWait) 
 		{
 			
@@ -28,7 +36,7 @@ public class ProgCompSubmissionHandler implements Runnable
 	
 	public void run() 
 	{
-		while(true)
+		while(!stopthread)
 		{
 			if(!subs.isEmpty()) 
 			{
@@ -44,7 +52,8 @@ public class ProgCompSubmissionHandler implements Runnable
 		}
 	}
 	
-	
+	private boolean stopthread;
 	private ThreadPoolExecutor executor;
-	private static BlockingQueue<Runnable> subs;	
+	private Thread thread;
+	private BlockingQueue<Runnable> subs;	
 }
