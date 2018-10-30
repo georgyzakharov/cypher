@@ -24,20 +24,25 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		String lang = request.getLanguage();
 		AssignmentTest[] tests = request.getAssignmentTests();
 
+//GEORGY CODE
+		
 		// you will have to return your info to me here
 		/**************/
 		//DockerRunDriver submission = new DockerRunDriver(1, "team1", code, lang);
 
 		//submission.writeResults(DockerRun.compExec(submission));
-
 		/**************/
-		//String result = submission.getResults();
 		
-		// Revised to reflect the updated Docker management classes
+//JAKE CODE
+		
 		/**************/
-		ProgCompSubmission submission = subHandler.addSubmission(new ProgCompSubmission(pnum, teamId, code, lang));
+		ProgCompSubmission submission = new ProgCompSubmission(pnum, teamId, code, lang);
+		submission.run();
+		/**************/
 		
-		//submission.run();
+//DYLAN CODE
+		/**************/
+		//ProgCompSubmission submission = subHandler.addSubmission(new ProgCompSubmission(pnum, teamId, code, lang));
 		/**************/
 		
 		TestResponse testresponse = new TestResponse();
