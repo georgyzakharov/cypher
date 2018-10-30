@@ -12,6 +12,7 @@ public class ProgCompSubmission implements Serializable, Runnable
 		this.code = code;
 		this.language = language;
 		this.compilationStatus = true;
+		this.threadWait = true;
 	}
 	
 	public void run()
@@ -44,6 +45,7 @@ public class ProgCompSubmission implements Serializable, Runnable
 	public int score;
 	public String result;
 	public boolean compilationStatus;
+	public boolean threadWait;
 
 	
 	
