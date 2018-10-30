@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TestExecutorServiceImpl implements TestExecutorService {
 
+	public TestExecutorServiceImpl() 
+	{
+		subHandler = new ProgCompSubmissionHandler();
+	}
 
 	@Override
 	public TestResponse execute(TestRequest request) {
@@ -31,9 +35,9 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		
 		// Revised to reflect the updated Docker management classes
 		/**************/
-		ProgCompSubmission submission = new ProgCompSubmission(pnum, teamId, code, lang);
+		ProgCompSubmission submission = subHandler.addSubmission(new ProgCompSubmission(pnum, teamId, code, lang));
 		
-		submission.run();
+		//submission.run();
 		/**************/
 		
 		TestResponse testresponse = new TestResponse();
@@ -57,4 +61,5 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		
 		return testresponse;
 	}
+	private ProgCompSubmissionHandler subHandler;
 }
