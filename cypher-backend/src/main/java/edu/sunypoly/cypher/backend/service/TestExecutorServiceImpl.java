@@ -1,7 +1,5 @@
 package edu.sunypoly.cypher.backend.service;
 
-import java.util.concurrent.BlockingQueue;
-
 import org.cypher.commons.AssignmentTest;
 import org.cypher.commons.AssignmentTestResult;
 import org.cypher.commons.TestRequest;
@@ -11,7 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class TestExecutorServiceImpl implements TestExecutorService {
 
-	public static BlockingQueue<Runnable> Submissions;
 
 	@Override
 	public TestResponse execute(TestRequest request) {
