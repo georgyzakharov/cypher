@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>User UI</title>
+	<title>Cypher-Home</title>
+    <link href="styles.css" rel="stylesheet" type="text/css" media="all">
 </head>
+<div class = "header">
+    <a style="font-weight: 600" href='home.html'>--Cypher-CMS--</a>
+    <a style="float:right;" href='scores.html'>Scores</a>
+    <a style="float:right;" href='login.html'>Login</a>
+</div>
 <body>
-<h2>Text field</h2>
-
-<p>The <strong>input type=&quot;text&quot;</strong> defines a one-line text input field:</p>
-
-<form action="/submission" enctype="multipart/form-data" method="post">
-	<select name="language">
-		<option value="0">Python</option>
-		<option value="1">Java</option>
-		<option value="2">C++</option>
-		<option value="3">C</option>
-	</select>
-	<br />
-Application Code<br />
-<br />
-<textarea cols="100" name="applicationCode" rows="10"></textarea><br />
-<br />
-<textarea name="test"></textarea><br />
-<br />
-<input name="submission" type="submit" value="Submit" />&nbsp;</form>
+    <h1 style="margin-top:50px;">User Code</h1>
+    <form action="/submission" enctype="multipart/form-data" method="post">
+        <div class="dropdown">
+            <select required name="language">
+                <option value="0">Python</option>
+                <option value="1">Java</option>
+                <option value="2">C++</option>
+                <option value="3">C</option>
+        </select>
+        </div>
+        <textarea required placeholder="Please enter your code to submit here" cols="100" name="applicationCode" rows="10"></textarea>
+        <textarea placeholder="Parameters" name="test"></textarea>
+        <input class="submitButton" name="submission" type="submit" value="Submit" />&nbsp;</form>
 </body>
 </html>
