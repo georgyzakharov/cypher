@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>User UI</title>
+	<title>Cypher-Create-a-Problem</title>
+    <link href="/Users/jacobhill/git/cypher/cypher-frontend/src/main/resources/templates/styles.css" rel="stylesheet" type="text/css" media="all">
 </head>
+<div class = "header">
+    <a style="font-weight: 600" href='home.html'>--Cypher-CMS--</a>
+    <a style="float:right;" href='login.html'>Login</a>
+    <a style="float:right;" href='grading-module.html'>Grading Module</a>
+</div>
 <body>
-<h2>Text field</h2>
-
-<p>The <strong>input type=&quot;text&quot;</strong> defines a one-line text input field:</p>
-
-<form action="/submitions" enctype="multipart/form-data" method="post"><select name="language"><option value="1">Python</option><option value="2">Java</option></select><br />
-Application Code<br />
-<br />
-<textarea cols="100" name="applicationCode" rows="10"></textarea><br />
-<br />
-<textarea name="test"></textarea><br />
-<br />
-<input name="submission" type="submit" value="Submit" />&nbsp;</form>
+    <h1 style="margin-top:50px;">Create a Problem</h1>
+    <form action="/submission" enctype="multipart/form-data" method="post">
+        <p style="margin-left:144px; margin-right:640px; font-family:Helvetica;">You can create a problem manually or upload a file which describes the problem.
+        To manually specify a problem, fill out the text field below with the problem description and select "Submit". To provide a problem
+        file, choose a file and then select "Submit".</p>
+        <textarea placeholder="Provide a problem description" cols="100" name="applicationCode" rows="10"></textarea>
+        <input class="fileUploadButton" name="submission" type="file" value="Submit" />&nbsp;<br><br><br>
+        <div class="probNumberDropdwn">
+            <select required name="problem-number">
+            	<option selected hidden>Problem Number*</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+        	</select>
+        </div>
+        <br><br><br><br>
+        <input class="submitButton" name="submission" type="submit" value="Submit" />&nbsp;</form><br><br><br><br><br>
+    <p style="font-family:Helvetica; margin-left:144px;" ><i>Note: Fields marked with <b>*</b> are required</i></p>
 </body>
 </html>
