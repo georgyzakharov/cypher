@@ -1,5 +1,21 @@
 package edu.sunypoly.cypher.db;
+/*
+Author: Austin Monson(Sannity)
 
+Date of Last Revision: 10/30/2018
+
+Class: CS 370
+    Group Members: Dylan, Jacob, Georgy
+
+Description: The manager that manages the accounts in the cypher 
+    software management suite. Passowrds and such.
+
+    The problem manager can be used in this fashion:
+        [Mis Manager].[Account Manager].---;
+
+Specification: 
+    ---
+*/
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

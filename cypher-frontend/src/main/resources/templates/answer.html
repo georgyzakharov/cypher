@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>User UI</title>
+	<title>Cypher</title>
+	<link href="styles.css" rel="stylesheet" type="text/css" media="all">
 </head>
+<div class = "header">
+    <a style="font-weight: 600" href='home.html'>--Cypher-CMS--</a>
+    <a style="float:right;" href='scores.html'>Scores</a>
+    <a style="float:right;" href='login.html'>Login</a>
+</div>
 <body>
-<h2>Text field</h2>
+	<h1 style="margin-top:50px;">Results</h1>
+	<!--<p><span th:text="${language}"></span></p>-->
 
+	<h2>Your Submission:</h2>
+	<p><pre th:text="${applicationCode}"></pre></p>
 
+	<h2>Entered Parameters:</h2>
+	<p><pre th:text="${test}"></pre></p>
 
-<p><span th:text="${language}"></span></p>
-
-<p>This is the application code</p>
-<p><span th:text="${applicationCode}"></span></p>
-
-<p>This is the input</p>
-<p><span th:text="${test}"></span></p>
-
-<p>This is the result</p>
-<p><pre th:text="${result}"></pre></p>
-
-
+	<h2>Result:</h2>
+	<p><pre th:text="${result}"></pre></p>
 </body>
 </html>

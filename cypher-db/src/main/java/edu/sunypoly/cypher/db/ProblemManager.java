@@ -160,26 +160,11 @@ public class ProblemManager
     }
     public boolean delete(String problemName)
     {
-        boolean success = false;
-        PreparedStatement stmt = null;
-        String query = null;
         //if problemname is too long, truncate
         if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
             problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
-        if(getId(problemName) != -1)
-        {
-            try 
-            {
-                query = "DELETE FROM problem WHERE id = ?;";
-                stmt = SQLCON.prepareStatement(query);
-                stmt.setInt(1, getId(problemName));
-                stmt.executeUpdate();
-            } 
-            catch (SQLException e) {}
-            if(getId(problemName) == -1)
-                success = true;
-        }
-        return success;
+            
+        return delete(getId(problemName));
     }
     
     public boolean delete(int problemId)
