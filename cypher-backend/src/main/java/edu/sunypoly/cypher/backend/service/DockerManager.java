@@ -609,6 +609,7 @@ System.out.println("I'm about to create the BufferedReader stdErr!");
 System.out.println("I'm hung on BufferedReader!");
 				String errorMessage = new String();
 				String s = null;
+System.out.println("I just declared String 'errorMessage'!");
 				while ((s = stdErr.readLine()) != null) {
 System.out.println("Error output for build process:" + s);
 					errorMessage = errorMessage + s;
