@@ -1,4 +1,21 @@
 package edu.sunypoly.cypher.db;
+/*
+Author: Austin Monson(Sannity)
+
+Date of Last Revision: 10/30/2018
+
+Class: CS 370
+    Group Members: Dylan, Jacob, Georgy
+
+Description: The manager that manages the solutions in the cypher 
+    software management suite.
+
+    The problem manager can be used in this fashion:
+        [Mis Manager].[Solution Manager].---;
+
+Specification: 
+    ---
+*/
 
 import java.sql.*;
 
