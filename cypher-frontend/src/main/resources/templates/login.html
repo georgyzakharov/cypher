@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html>
-   <head>
-      <title>User UI</title>
-   </head>
-   <body>
-      <h2>Log In Page</h2>
-      <form action="/mainpage" method="get">
-         <br />
-         Log in
-         <br />
-         <br />
-         Username
-         <br />
-         <textarea cols="10" name="userName" rows="1"></textarea>
-         <br />
-         Password
-         <br />
-         <textarea cols="10" name="password" rows="1"></textarea>
-         <br />
-         <input name="mainpage" type="submit" value="Log in" />&nbsp;
-      </form>
-   </body>
+<head>
+    <title>Cypher--Login</title>
+    <link href="styles.css" rel="stylesheet" type="text/css" media="all">
+</head>
+<div class = "header">
+    <a style="font-weight: 600" href='home.html'>--Cypher-CMS--</a>
+    <a style="float:right;" href='scores.html'>Scores</a>
+    <a style="float:right;" href='login.html'>Login</a>
+</div>
+<body>
+    <h1 style="margin-top:50px;">Login:</h1>
+    <form action="/mainpage" method="get">
+        <h3>Username: <textarea required class="loginTextBoxes" cols="10" name="userName" rows="1"></textarea></h3>
+        <br />
+        <h3>Password: <textarea required class="loginTextBoxes" cols="10" name="password" rows="1"></textarea></h3>
+        <br /><br /><br />
+        <input class="submitButton" name="mainpage" type="submit" value="Log in" />&nbsp;
+    </form>
+</body>
 </html>
