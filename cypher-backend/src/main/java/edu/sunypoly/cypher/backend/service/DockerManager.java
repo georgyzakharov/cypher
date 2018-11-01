@@ -580,52 +580,15 @@ public class DockerManager {
 				ProcessBuilder pb = new ProcessBuilder();
 				pb.directory(f.getParentFile().getCanonicalFile());
 				pb.command("docker", "build", "-t", imageTag, ".");
-				
-				
-				
-				
-				
-System.out.println("About to build the Docker image for file: '" + f.getPath() + "'");
-
-				
-				
-				
-				
-				
 				Process p = pb.start();
-	
 				
-				
-				
-				
-System.out.println("About to read output from the build process...");
-				
-				
-				
-				
-				
-System.out.println("I'm about to create the BufferedReader stdErr!");
 				BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-System.out.println("I'm hung on BufferedReader!");
 				String errorMessage = new String();
 				String s = null;
-System.out.println("I just declared String 'errorMessage'!");
 				while ((s = stdErr.readLine()) != null) {
-System.out.println("Error output for build process:" + s);
 					errorMessage = errorMessage + s;
 				}
 	
-				
-				
-				
-				
-System.out.println("Reading output from build process...");
-				
-				
-				
-				
-				
-				
 				if ((errorMessage != null) && (!errorMessage.isEmpty())) {
 					if (stdErr != null) {
 						stdErr.close();
