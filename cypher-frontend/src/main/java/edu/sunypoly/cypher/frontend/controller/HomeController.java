@@ -19,13 +19,20 @@ public class HomeController {
 	
 	// Home page with all the UI
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
+	public ModelAndView getLogin() {
+
+		ModelAndView model = new ModelAndView("login");
+
+		return model;
+	}
+
+	@RequestMapping(value = { "/mainpage" }, method = RequestMethod.GET)
 	public ModelAndView getHome() {
 
 		ModelAndView model = new ModelAndView("home");
 
 		return model;
 	}
-
 	
 	@RequestMapping(value = { "/submission" }, method = RequestMethod.POST)
 	public ModelAndView getAnswer(int language, String applicationCode, String test) {
