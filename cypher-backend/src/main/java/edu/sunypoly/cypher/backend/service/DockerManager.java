@@ -609,6 +609,7 @@ System.out.println("About to read output from the build process...");
 				String errorMessage = new String();
 				String s = null;
 				while ((s = stdErr.readLine()) != null) {
+System.out.println("Error output for build process:" + s);
 					errorMessage = errorMessage + s;
 				}
 	
