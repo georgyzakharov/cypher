@@ -4,6 +4,7 @@ package edu.sunypoly.cypher.backend.service;
 
 import java.io.*;
 import java.util.Random;
+import java.net.InetAddress;
 
 public class DockerManager {
 
@@ -45,12 +46,6 @@ public class DockerManager {
 			e.printStackTrace();
 		}
 	}
-
-/***************************************************************************************************/
-/*
-	File handling & utility methods
-*/
-/***************************************************************************************************/
 
 	//Appends a string 's' to file 'f'
 	public boolean write(File f, String s) {
@@ -98,6 +93,45 @@ public class DockerManager {
 		return false;
 	}
 
+	//Remove old Dockerfiles if they exist (they shouldn't)
+	public boolean init() {
+		try {
+			for (File f : gccDockerfile.getParentFile().getCanonicalFile().listFiles()) {
+				if (f.exists()) {
+					f.delete();
+				}
+			}
+			gccDockerfile.createNewFile();
+
+			for (File f : openjdkDockerfile.getParentFile().getCanonicalFile().listFiles()) {
+				if (f.exists()) {
+					f.delete();
+				}
+			}
+			openjdkDockerfile.createNewFile();
+
+			for (File f : pythonDockerfile.getParentFile().getCanonicalFile().listFiles()) {
+				if (f.exists()) {
+					f.delete();
+				}
+			}
+			pythonDockerfile.createNewFile();
+		}
+
+		catch (IOException e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+			return false;
+		}
+		catch (Exception e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
 	//BE CAREFUL!! This method will recursively delete all files
 	//within the specified path, including directories!
 	//To delete "/home/$USER/Cypher/[gcc,openjdk,python]/Dockerfile",
@@ -142,51 +176,6 @@ public class DockerManager {
 		
 		return false;
 	}
-
-	//Remove old Dockerfiles if they exist (they shouldn't)
-	public boolean init() {
-		try {
-			for (File f : gccDockerfile.getParentFile().getCanonicalFile().listFiles()) {
-				if (f.exists()) {
-					f.delete();
-				}
-			}
-			gccDockerfile.createNewFile();
-
-			for (File f : openjdkDockerfile.getParentFile().getCanonicalFile().listFiles()) {
-				if (f.exists()) {
-					f.delete();
-				}
-			}
-			openjdkDockerfile.createNewFile();
-
-			for (File f : pythonDockerfile.getParentFile().getCanonicalFile().listFiles()) {
-				if (f.exists()) {
-					f.delete();
-				}
-			}
-			pythonDockerfile.createNewFile();
-		}
-
-		catch (IOException e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-			return false;
-		}
-		catch (Exception e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
-	}
-
-/***************************************************************************************************/
-/*
-	Generic Docker-related methods
-*/
-/***************************************************************************************************/
 
 	//Checks if Docker is running
 	public static boolean testDockerDaemon() {
@@ -240,53 +229,56 @@ public class DockerManager {
 		return false;
 	}
 
-	//Sets up the group and user "appuser" for
-	//a Docker container by writing the Linux commands
-	//"useradd" and "groupadd" to the Dockerfile.
-	//A randomly generated alphanumeric password is
-	//used for "appuser", to limit privileged command
-	//execution within the container (compiler and
-	//source code executables are not privileged
-	//and thus alone will never require a password
-	//to execute).
-	public boolean prepDockerfile(File f) {
-		Random PRNG = new Random(System.currentTimeMillis());
-		final int len = 16; //Password length
-		int i;
-		String password = new String();
-		for (i = 0; i < len; i++) {
-			//122 in ASCII is 'z'
-			int n = PRNG.nextInt(123);
-			
-			//ASCII:
-			//	91 = '[' , 92 = '\' , 93 = ']' , 94 = '^' ,
-			// 95 = '_' , 96 = '`' ...all invalid password characters
-			while ((n > 90) && (n < 97)) {
-				n = PRNG.nextInt(123);
+	//Checks if Docker container exists
+	public static boolean checkDockerContainer(String imageTag) {
+		try {
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.command("docker", "container", "ps", "-a");
+			Process p = pb.start();
+
+			BufferedReader stdIn = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+			String results = new String();
+			String s = null;
+
+			while ((s = stdIn.readLine()) != null) {
+				results = results + s;
 			}
-			//65 in ASCII is 'A', so A-z
-			if (n >= 65) {
-				password = password + Character.toString((char)n);
+
+			if (results.contains(imageTag)) {
+				if (stdIn != null) {
+					stdIn.close();
+				}
+				p.waitFor();
+				p.destroy();
+				return true;
 			}
 			else {
-				password = password + Character.toString(Integer.toString(n).charAt(0));
+				if (stdIn != null) {
+					stdIn.close();
+				}
+				p.waitFor();
+				p.destroy();
 			}
 		}
-		if (write(f, new String("RUN groupadd -g 999 anonymous "
-					+ "&& useradd -r -m -u 999 -g anonymous -p "
-					+ password + " anonymous\n"
-					+ "USER anonymous"))) {
-		 	return true;
+
+		catch (InterruptedException e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
 		}
 
+		catch (IOException e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+
+		catch (Exception e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+		
 		return false;
 	}
-
-/***************************************************************************************************/
-/*
-	Methods for managing Docker images
-*/
-/***************************************************************************************************/
 
 	//Checks if Docker image exists
 	public static boolean checkDockerImage(String imageTag) {
@@ -338,61 +330,6 @@ public class DockerManager {
 			e.printStackTrace();
 		} 
 	
-		return false;
-	}
-
-	//Builds a Docker image
-	public boolean buildDockerImage(File f, String imageTag) {
-		try {
-			if (f.getParentFile().isDirectory()) {
-				ProcessBuilder pb = new ProcessBuilder();
-				pb.directory(f.getParentFile().getCanonicalFile());
-				pb.command("docker", "build", "-t", imageTag, ".");
-				Process p = pb.start();
-				
-				BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-				String errorMessage = new String();
-				String s = null;
-
-				while ((s = stdErr.readLine()) != null) {
-					errorMessage = errorMessage + s;
-				}
-		
-				if ((errorMessage != null) && (!errorMessage.isEmpty())) {
-					if (stdErr != null) {
-						stdErr.close();
-					}
-					p.waitFor();
-					p.destroy();
-					System.err.println("Error: " + errorMessage);
-				}
-				else {
-					if (stdErr != null) {
-						stdErr.close();
-					}
-					p.waitFor();
-					p.destroy();
-					return true;
-				}
-			}
-			else {
-				System.err.println("Error: File '" + f.getParentFile().getCanonicalPath() + "' is not a directory");
-			}
-		}
-
-		catch (InterruptedException e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-		catch (Exception e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-
 		return false;
 	}
 
@@ -475,75 +412,58 @@ public class DockerManager {
 		return false;
 	}
 
-	//Pulls a Docker image from the Docker Hub.
-	//NOTE: if the host system is not connected to
-	//the Internet, then this method will hang
-	//while waiting for the process to complete.
-	public static boolean pullDockerImage(String imageTag) {
+	//Stops a Docker container
+	public static boolean stopDockerContainer(String imageTag) {
 		try {
 			ProcessBuilder pb = new ProcessBuilder();
-			pb.command("docker", "pull", imageTag);
-			
-			Process p = pb.start();
-			
-			BufferedReader stdIn = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-			
+			BufferedReader stdErr;
 			String errorMessage = new String();
-			String input = new String();
 			String s = null;
-			
-			while ((s = stdErr.readLine()) != null) {
-				errorMessage = errorMessage + s;
-			}
-			
-			while ((s = stdIn.readLine()) != null) {
-				input = input + s;
-			}
-			
-			if ((errorMessage != null) && (!errorMessage.isEmpty())) {
-				if (stdErr != null) {
-					stdErr.close();
+
+			if (checkDockerContainer(imageTag)) {
+				//Stop any running containers with the same
+				//name as the image tag
+				pb.command("docker", "container", "stop", imageTag);
+				
+				System.out.println("Stopping Docker container '" + imageTag + "'...");
+
+				Process p = pb.start();
+
+				stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+				while ((s = stdErr.readLine()) != null) {
+					errorMessage = errorMessage + s;
 				}
-				if (stdIn != null) {
-					stdIn.close();
+
+				if ((errorMessage != null) && (!errorMessage.isEmpty())) {
+					if (stdErr != null) {
+						stdErr.close();
+					}
+					p.waitFor();
+					p.destroy();
+					System.err.println("Error: " + errorMessage);
 				}
-				p.waitFor();
-				p.destroy();
-				System.err.println("Error: " + errorMessage);
-			}
-			else if ((input != null) && (!input.isEmpty())) {
-				if (stdErr != null) {
-					stdErr.close();
+				else {
+					if (stdErr != null) {
+						stdErr.close();
+					}
+					p.waitFor();
+					p.destroy();
+					return true;
 				}
-				if (stdIn != null) {
-					stdIn.close();
-				}
-				p.waitFor();
-				p.destroy();
-				return true;
-			}
-			else {
-				if (stdErr != null) {
-					stdErr.close();
-				}
-				if (stdIn != null) {
-					stdIn.close();
-				}
-				p.waitFor();
-				p.destroy();
-				System.err.println("Error: Docker daemon failed to write to STDOUT or STDERR streams");
 			}
 		}
-		
+
 		catch (InterruptedException e) {
 			System.err.println(e.toString());
 			e.printStackTrace();
 		}
+
 		catch (IOException e) {
 			System.err.println(e.toString());
 			e.printStackTrace();
 		}
+
 		catch (Exception e) {
 			System.err.println(e.toString());
 			e.printStackTrace();
@@ -552,42 +472,45 @@ public class DockerManager {
 		return false;
 	}
 
-/***************************************************************************************************/
-/*
-	Methods for managing Docker containers
-*/
-/***************************************************************************************************/
-
-	//Checks if Docker container exists
-	public static boolean checkDockerContainer(String imageTag) {
+	//Removes a Docker container
+	public static boolean removeDockerContainer(String imageTag) {
 		try {
 			ProcessBuilder pb = new ProcessBuilder();
-			pb.command("docker", "container", "ps", "-a");
-			Process p = pb.start();
-
-			BufferedReader stdIn = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-			String results = new String();
+			BufferedReader stdErr;
+			String errorMessage = new String();
 			String s = null;
 
-			while ((s = stdIn.readLine()) != null) {
-				results = results + s;
-			}
+			if (checkDockerContainer(imageTag)) {
+				//Remove any paused or stopped Docker containers
+				//with the provided name ("imageTag")
+				pb.command("docker", "container", "rm", imageTag);
+				
+				System.out.println("Removing Docker container '" + imageTag + "'...");
 
-			if (results.contains(imageTag)) {
-				if (stdIn != null) {
-					stdIn.close();
+				Process p = pb.start();
+
+				stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+				while ((s = stdErr.readLine()) != null) {
+					errorMessage = errorMessage + s;
 				}
-				p.waitFor();
-				p.destroy();
-				return true;
-			}
-			else {
-				if (stdIn != null) {
-					stdIn.close();
+
+				if ((errorMessage != null) && (!errorMessage.isEmpty())) {
+					if (stdErr != null) {
+						stdErr.close();
+					}
+					p.waitFor();
+					p.destroy();
+					System.err.println("Error: " + errorMessage);
 				}
-				p.waitFor();
-				p.destroy();
+				else {
+					if (stdErr != null) {
+						stdErr.close();
+					}
+					p.waitFor();
+					p.destroy();
+					return true;
+				}
 			}
 		}
 
@@ -606,11 +529,108 @@ public class DockerManager {
 			e.printStackTrace();
 		}
 		
+		return false;
+	}
+
+	//Sets up the group and user "appuser" for
+	//a Docker container by writing the Linux commands
+	//"useradd" and "groupadd" to the Dockerfile.
+	//A randomly generated alphanumeric password is
+	//used for "appuser", to limit privileged command
+	//execution within the container (compiler and
+	//source code executables are not privileged
+	//and thus alone will never require a password
+	//to execute).
+	public boolean prepDockerfile(File f) {
+		Random PRNG = new Random(System.currentTimeMillis());
+		final int len = 16; //Password length
+		int i;
+		String password = new String();
+		for (i = 0; i < len; i++) {
+			//122 in ASCII is 'z'
+			int n = PRNG.nextInt(123);
+			
+			//ASCII:
+			//	91 = '[' , 92 = '\' , 93 = ']' , 94 = '^' ,
+			// 95 = '_' , 96 = '`' ...all invalid password characters
+			while ((n >= 91) && (n <= 96)) {
+				n = PRNG.nextInt(123);
+			}
+			//65 in ASCII is 'A', so A-z
+			if (n >= 65) {
+				password = password + Character.toString((char)n);
+			}
+			else {
+				password = password + Character.toString(Integer.toString(n).charAt(0));
+			}
+		}
+		if (write(f, new String("RUN groupadd -g 999 appuser "
+					+ "&& useradd -r -m -u 999 -g appuser -p "
+					+ password + " appuser\n"
+					+ "USER appuser"))) {
+		 	return true;
+		}
+
+		return false;
+	}
+
+	//Builds a Docker image
+	public boolean buildDockerImage(File f, String imageTag) {
+		try {
+			if (f.getParentFile().isDirectory()) {
+				ProcessBuilder pb = new ProcessBuilder();
+				pb.directory(f.getParentFile().getCanonicalFile());
+				pb.command("docker", "build", "-t", imageTag, ".");
+				Process p = pb.start();
+				
+				BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+				String errorMessage = new String();
+				String s = null;
+
+				while ((s = stdErr.readLine()) != null) {
+					errorMessage = errorMessage + s;
+				}
+		
+				if ((errorMessage != null) && (!errorMessage.isEmpty())) {
+					if (stdErr != null) {
+						stdErr.close();
+					}
+					p.waitFor();
+					p.destroy();
+					System.err.println("Error: " + errorMessage);
+				}
+				else {
+					if (stdErr != null) {
+						stdErr.close();
+					}
+					p.waitFor();
+					p.destroy();
+					return true;
+				}
+			}
+			else {
+				System.err.println("Error: File '" + f.getParentFile().getCanonicalPath() + "' is not a directory");
+			}
+		}
+
+		catch (InterruptedException e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+
 		return false;
 	}
 
 	//Runs a Docker container
-	public boolean startDockerContainer(String imageTag) {
+	public static boolean startDockerContainer(String imageTag) {
 		try {
 			ProcessBuilder pb = new ProcessBuilder();
 			//"-d" switch means to run the container detached from STDIN/STDOUT, basically
@@ -691,132 +711,6 @@ public class DockerManager {
 		return false;
 	}
 
-	//Stops a Docker container
-	public boolean stopDockerContainer(String imageTag) {
-		try {
-			ProcessBuilder pb = new ProcessBuilder();
-			BufferedReader stdErr;
-			String errorMessage = new String();
-			String s = null;
-
-			if (checkDockerContainer(imageTag)) {
-				//Stop any running containers with the same
-				//name as the image tag
-				pb.command("docker", "container", "stop", imageTag);
-				
-				Process p = pb.start();
-
-				stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-				while ((s = stdErr.readLine()) != null) {
-					errorMessage = errorMessage + s;
-				}
-
-				if ((errorMessage != null) && (!errorMessage.isEmpty())) {
-					if (stdErr != null) {
-						stdErr.close();
-					}
-					p.waitFor();
-					p.destroy();
-					System.err.println("Error: " + errorMessage);
-				}
-				else {
-					if (stdErr != null) {
-						stdErr.close();
-					}
-					p.waitFor();
-					p.destroy();
-					return true;
-				}
-			}
-		}
-
-		catch (InterruptedException e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-
-		catch (IOException e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-
-		catch (Exception e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-		
-		return false;
-	}
-
-	//Removes a Docker container
-	public boolean removeDockerContainer(String imageTag) {
-		try {
-			ProcessBuilder pb = new ProcessBuilder();
-			BufferedReader stdErr;
-			String errorMessage = new String();
-			String s = null;
-
-			if (checkDockerContainer(imageTag)) {
-				//Remove any paused or stopped Docker containers
-				//with the provided name ("imageTag")
-				pb.command("docker", "container", "rm", imageTag);
-				
-//				System.out.println("Removing Docker container '" + imageTag + "'...");
-
-				Process p = pb.start();
-
-				stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-				while ((s = stdErr.readLine()) != null) {
-					errorMessage = errorMessage + s;
-				}
-
-				if ((errorMessage != null) && (!errorMessage.isEmpty())) {
-					if (stdErr != null) {
-						stdErr.close();
-					}
-					p.waitFor();
-					p.destroy();
-					System.err.println("Error: " + errorMessage);
-				}
-				else {
-					if (stdErr != null) {
-						stdErr.close();
-					}
-					p.waitFor();
-					p.destroy();
-					return true;
-				}
-			}
-		}
-
-		catch (InterruptedException e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-
-		catch (IOException e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-
-		catch (Exception e) {
-			System.err.println(e.toString());
-			e.printStackTrace();
-		}
-		
-		return false;
-	}
-
-
-/***************************************************************************************************/
-/*
-	Methods for managing multiple Docker containers for the Cypher sandbox
-*/
-/***************************************************************************************************/
-
-
 	//Starts up the containers "gcc-cypher", "openjdk-cypher"
 	//and "python-cypher" from scratch. Old containers (if there
 	//are any) are stopped and removed, old images are removed,
@@ -827,9 +721,8 @@ public class DockerManager {
 		boolean openjdk = false;
 		boolean python = false;
 
-		System.out.println();
-
 		for (String container : conts) {
+			System.out.println();
 			if (!removeDockerImage(container)) {
 				System.out.println("Found no images or containers tagged as '" + container + "'");
 			}
@@ -977,9 +870,9 @@ public class DockerManager {
 		return (gcc && openjdk && python);
 		//return (gcc || openjdk || python);
 	}
-
+	
 	//Stops and removes Docker containers
-	public boolean stopContainers(String ...conts) {
+	public static boolean stopContainers(String ...conts) {
 		boolean gcc = false;
 		boolean openjdk = false;
 		boolean python = false;
@@ -987,12 +880,10 @@ public class DockerManager {
 		try {
 			for (String container : conts) {
 				if (checkDockerContainer(container)) {
-					System.out.println("\nStopping Docker container '" + container + "'...");
 					if (stopDockerContainer(container)) {
 						System.out.println("Stopped Docker container '" + container + "'");
-						System.out.println("Removing Docker container '" + container + "'...");
 						if (removeDockerContainer(container)) {
-							System.out.println("Removed Docker container '" + container + "'");
+							System.out.println("Removed container '" + container + "'");
 							if (container.contentEquals("gcc-cypher")) {
 								gcc = true;
 							}
@@ -1028,97 +919,98 @@ public class DockerManager {
 		return (gcc && openjdk && python);
 		//return (gcc || openjdk || python);
 	}
-
-/***************************************************************************************************/
-/*
-	Starts up the Cypher sandbox
-*/
-/***************************************************************************************************/
+	
+	//Pulls a Docker image from the Docker Hub.
+	//NOTE: if the host system is not connected to
+	//the Internet, then this method will hang
+	//while waiting for the process to complete.
+	public boolean pullDockerImage(String imageTag) {
+		try {
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.command("docker", "pull", imageTag);
+			
+			Process p = pb.start();
+			
+			BufferedReader stdIn = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			
+			String errorMessage = new String();
+			String input = new String();
+			String s = null;
+			
+			while ((s = stdErr.readLine()) != null) {
+				errorMessage = errorMessage + s;
+			}
+			
+			while ((s = stdIn.readLine()) != null) {
+				input = input + s;
+			}
+			
+			if ((errorMessage != null) && (!errorMessage.isEmpty())) {
+				if (stdErr != null) {
+					stdErr.close();
+				}
+				if (stdIn != null) {
+					stdIn.close();
+				}
+				p.waitFor();
+				p.destroy();
+				System.err.println("Error: " + errorMessage);
+			}
+			else if ((input != null) && (!input.isEmpty())) {
+				if (stdErr != null) {
+					stdErr.close();
+				}
+				if (stdIn != null) {
+					stdIn.close();
+				}
+				p.waitFor();
+				p.destroy();
+				return true;
+			}
+			else {
+				if (stdErr != null) {
+					stdErr.close();
+				}
+				if (stdIn != null) {
+					stdIn.close();
+				}
+				p.waitFor();
+				p.destroy();
+				System.err.println("Error: Docker daemon failed to write to STDOUT or STDERR streams");
+			}
+		}
+		
+		catch (InterruptedException e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
 
 	public static void main(String[] args) {
 		DockerManager dock = new DockerManager();
 
-		//Tests to see if Docker daemon is running
 		if (DockerManager.testDockerDaemon()) {
-			boolean gcc = false;
-			boolean openjdk = false;
-			boolean python = false;
-
-			//Stops containers
-			if (args.length > 0 && args[0].equalsIgnoreCase("stop")) {
-				if (!dock.stopContainers("gcc-cypher", "openjdk-cypher", "python-cypher")) {
-					System.err.println("Failed to stop all Docker containers...");
-				}
-				else {
-					System.out.println();
-				}
+			if (DockerManager.checkDockerImage("gcc", "openjdk", "python")) {
+				
+			}
+			
+			if (dock.startContainers("gcc-cypher", "openjdk-cypher", "python-cypher")) {
+				System.out.println("\nSuccessfully started all Docker containers!\n");
 			}
 			else {
-				//Gets Docker image 'gcc' if not installed.
-				//MAY HANG DURING DOWNLOAD!
-				if (!DockerManager.checkDockerImage("gcc")) {
-					System.out.println("Found no base image tagged as 'gcc'");
-					System.out.println("Attempting to download image 'gcc' from Docker Hub. THIS MAY TAKE SOME TIME...");
-					if (DockerManager.pullDockerImage("gcc")) {
-						gcc = true;
-					}
-					else {
-						System.err.println("!-->Error: Failed to download image 'gcc' from Docker Hub");
-					}
-				}
-				else {
-					gcc = true;
-				}
-
-				//Gets Docker image 'openjdk' if not installed.
-				//MAY HANG DURING DOWNLOAD!
-				if (!DockerManager.checkDockerImage("openjdk")) {
-					System.out.println("Found no base image tagged as 'openjdk'");
-					System.out.println("Attempting to download image 'openjdk' from Docker Hub. THIS MAY TAKE SOME TIME...");
-					if (DockerManager.pullDockerImage("openjdk")) {
-						openjdk = true;
-					}
-					else {
-						System.err.println("!-->Error: Failed to download image 'openjdk' from Docker Hub");
-					}
-				}
-				else {
-					openjdk = true;
-				}
-
-				//Gets Docker image 'python' if not installed.
-				//MAY HANG DURING DOWNLOAD!
-				if (!DockerManager.checkDockerImage("python")) {
-					System.out.println("Found no base image tagged as 'python'");
-					System.out.println("Attempting to pull download 'python' from Docker Hub. THIS MAY TAKE SOME TIME...");
-					if (DockerManager.pullDockerImage("python")) {
-						python = true;
-					}
-					else {
-						System.err.println("!-->Error: Failed to download image 'python' from Docker Hub");
-					}
-				}
-				else {
-					python = true;
-				}
-
-
-				if (gcc && openjdk && python) {
-					if (dock.startContainers("gcc-cypher", "openjdk-cypher", "python-cypher")) {
-						System.out.println("\nSuccessfully started all Docker containers!\n");
-					}
-					else {
-						System.err.println("Error: Failed to start all Docker containers...");
-					}
-				}
-				else {
-					System.err.println("!-->Error: Failed to start Docker containers due to the following missing Docker images:");
-					if (!gcc) System.err.println("    --->'gcc'");
-					if (!openjdk) System.err.println("    --->'openjdk'");
-					if (!python) System.err.println("    --->'python'");
-				}
+				System.err.println("Error: Failed to start all Docker containers...");
 			}
-
 		}
 		else {
 			System.err.println("\nError: Docker is not running. Terminated execution.\n");
@@ -1128,6 +1020,7 @@ public class DockerManager {
 	}
 
 }
+
 
 
 
