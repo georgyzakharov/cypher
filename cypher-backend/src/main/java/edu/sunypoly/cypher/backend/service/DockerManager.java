@@ -1057,7 +1057,7 @@ public class DockerManager {
 				//Gets Docker image 'gcc' if not installed.
 				//MAY HANG DURING DOWNLOAD!
 				if (!DockerManager.checkDockerImage("gcc")) {
-					System.out.println("Found no base image tagged as 'gcc'");
+					System.out.println("\nFound no base image tagged as 'gcc'");
 					System.out.println("Attempting to download image 'gcc' from Docker Hub. THIS MAY TAKE SOME TIME...");
 					if (DockerManager.pullDockerImage("gcc")) {
 						System.out.println("Downloaded image 'gcc' from Docker Hub.");
@@ -1074,7 +1074,7 @@ public class DockerManager {
 				//Gets Docker image 'openjdk' if not installed.
 				//MAY HANG DURING DOWNLOAD!
 				if (!DockerManager.checkDockerImage("openjdk")) {
-					System.out.println("Found no base image tagged as 'openjdk'");
+					System.out.println("\nFound no base image tagged as 'openjdk'");
 					System.out.println("Attempting to download image 'openjdk' from Docker Hub. THIS MAY TAKE SOME TIME...");
 					if (DockerManager.pullDockerImage("openjdk")) {
 						System.out.println("Downloaded image 'openjdk' from Docker Hub.");
@@ -1091,8 +1091,8 @@ public class DockerManager {
 				//Gets Docker image 'python' if not installed.
 				//MAY HANG DURING DOWNLOAD!
 				if (!DockerManager.checkDockerImage("python")) {
-					System.out.println("Found no base image tagged as 'python'");
-					System.out.println("Attempting to pull download 'python' from Docker Hub. THIS MAY TAKE SOME TIME...");
+					System.out.println("\nFound no base image tagged as 'python'");
+					System.out.println("Attempting to download 'python' from Docker Hub. THIS MAY TAKE SOME TIME...");
 					if (DockerManager.pullDockerImage("python")) {
 						System.out.println("Downloaded image 'python' from Docker Hub.");
 						python = true;
