@@ -1,9 +1,10 @@
 package edu.sunypoly.cypher.backend.service;
 
-//Date: 24 Oct. 2018
+//Date: 2 Nov. 2018
 
 import java.io.*;
 import java.util.Random;
+import java.net.InetAddress;
 
 public class DockerManager {
 
@@ -93,7 +94,7 @@ public class DockerManager {
 	}
 
 	//Remove old Dockerfiles if they exist (they shouldn't)
-	public boolean initialize() {
+	public boolean init() {
 		try {
 			for (File f : gccDockerfile.getParentFile().getCanonicalFile().listFiles()) {
 				if (f.exists()) {
@@ -198,7 +199,7 @@ public class DockerManager {
 				stdErr.close();
 				p.waitFor();
 				p.destroy();
-				System.err.println("<System(Cypher)> " + errorMessage);
+				System.err.println("Error: " + errorMessage);
 			}
 			else {
 				if (stdErr != null) {
@@ -280,7 +281,7 @@ public class DockerManager {
 	}
 
 	//Checks if Docker image exists
-	public boolean checkDockerImage(String imageTag) {
+	public static boolean checkDockerImage(String imageTag) {
 		try {
 			//List all Docker images and search images
 			//for matching image tag
@@ -585,10 +586,11 @@ public class DockerManager {
 				BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 				String errorMessage = new String();
 				String s = null;
+
 				while ((s = stdErr.readLine()) != null) {
 					errorMessage = errorMessage + s;
 				}
-	
+		
 				if ((errorMessage != null) && (!errorMessage.isEmpty())) {
 					if (stdErr != null) {
 						stdErr.close();
@@ -689,7 +691,7 @@ public class DockerManager {
 				}
 				p.waitFor();
 				p.destroy();
-				System.err.println("Error: Docker container process did not write to STDERR or STDOUT streams");
+				System.err.println("Error: Docker container process failed to write to STDERR or STDOUT streams");
 			}
 		}
 
@@ -727,7 +729,7 @@ public class DockerManager {
 		}
 
 		try {
-			if (initialize()) {
+			if (init()) {
 				for (String container : conts) {
 					//GCC Docker container
 					System.out.println();
@@ -917,11 +919,92 @@ public class DockerManager {
 		return (gcc && openjdk && python);
 		//return (gcc || openjdk || python);
 	}
+	
+	//Pulls a Docker image from the Docker Hub.
+	//NOTE: if the host system is not connected to
+	//the Internet, then this method will hang
+	//while waiting for the process to complete.
+	public boolean pullDockerImage(String imageTag) {
+		try {
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.command("docker", "pull", imageTag);
+			
+			Process p = pb.start();
+			
+			BufferedReader stdIn = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			
+			String errorMessage = new String();
+			String input = new String();
+			String s = null;
+			
+			while ((s = stdErr.readLine()) != null) {
+				errorMessage = errorMessage + s;
+			}
+			
+			while ((s = stdIn.readLine()) != null) {
+				input = input + s;
+			}
+			
+			if ((errorMessage != null) && (!errorMessage.isEmpty())) {
+				if (stdErr != null) {
+					stdErr.close();
+				}
+				if (stdIn != null) {
+					stdIn.close();
+				}
+				p.waitFor();
+				p.destroy();
+				System.err.println("Error: " + errorMessage);
+			}
+			else if ((input != null) && (!input.isEmpty())) {
+				if (stdErr != null) {
+					stdErr.close();
+				}
+				if (stdIn != null) {
+					stdIn.close();
+				}
+				p.waitFor();
+				p.destroy();
+				return true;
+			}
+			else {
+				if (stdErr != null) {
+					stdErr.close();
+				}
+				if (stdIn != null) {
+					stdIn.close();
+				}
+				p.waitFor();
+				p.destroy();
+				System.err.println("Error: Docker daemon failed to write to STDOUT or STDERR streams");
+			}
+		}
+		
+		catch (InterruptedException e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
 
 	public static void main(String[] args) {
 		DockerManager dock = new DockerManager();
 
 		if (DockerManager.testDockerDaemon()) {
+			if (DockerManager.checkDockerImage("gcc", "openjdk", "python")) {
+				
+			}
+			
 			if (dock.startContainers("gcc-cypher", "openjdk-cypher", "python-cypher")) {
 				System.out.println("\nSuccessfully started all Docker containers!\n");
 			}
