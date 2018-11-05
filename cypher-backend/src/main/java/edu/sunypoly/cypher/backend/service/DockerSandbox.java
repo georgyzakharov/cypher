@@ -20,6 +20,7 @@ public class DockerSandbox {
 	}
 
 	//Creates a temporary file in which to write and copy a competitor's submission code
+	//this file is created for each of the submitions 
 	public File writeTmpFile() {
 		try {
 			File f = new File(System.getProperty("user.home") + System.getProperty("file.separator")
