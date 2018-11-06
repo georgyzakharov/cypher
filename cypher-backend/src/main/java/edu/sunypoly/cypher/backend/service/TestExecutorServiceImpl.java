@@ -15,7 +15,7 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 	}
 
 	@Override
-	public TestResponse execute(TestRequest request) {
+	public synchronized TestResponse execute(TestRequest request) {
 		// you have access to all the variables that i send to you
 
 		int pnum = request.getProgramNumber();
