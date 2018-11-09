@@ -7,7 +7,7 @@ public class Driver {
 	public static void main(String[] args) throws AlreadyExistsException, NullInputException, InvalidDataException, DoesNotExistException {
 	Mis Manager = new Mis("jdbc:mysql://localhost/cypher_db?useSSL=false", "cypher", "cypher");
 	
-	Manager.Team.create("team1","password");
+	Manager.Team.create("team1","Password123");
 	System.out.println(Manager.Team.getId("team1"));
 	}
 }

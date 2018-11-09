@@ -71,10 +71,10 @@ public class TeamManager
         {
             try 
             {
-                createAccount(getId(teamName), password);
                 stmt = SQLCON.prepareStatement(query);
                 stmt.setString(1, teamName);
                 stmt.executeUpdate();
+                createAccount(getId(teamName), password);
             } 
             catch (SQLException e) 
             {
@@ -247,7 +247,9 @@ public class TeamManager
             stmt.setString(2, String.format("%032x", new BigInteger(hash)));
             stmt.executeUpdate();
         }
-        catch(SQLException e){}
+        catch(SQLException e){
+            e.printStackTrace();
+        }
 
         //Convert to a hex string to store
         StringBuffer hexString = new StringBuffer();
