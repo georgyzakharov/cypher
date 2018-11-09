@@ -13,33 +13,21 @@
 	<artifactId>cypher-frontend</artifactId>
 	<packaging>jar</packaging>
 
-		
+
 	<dependencies>
 		<!-- This is an internal dependencies for common libraries -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>cypher-commons</artifactId>
-			<version>${project.version}</version>	
-		</dependency>	
-	
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- apache dependencies -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 
-
-
-		<!-- swagger documentation enabled -->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-		</dependency>
 
 		<!-- Spring dependencies -->
 
@@ -87,6 +75,14 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<configuration>
+					<mainClass>edu.sunypoly.cypher.frontend.App</mainClass>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<executions>
@@ -96,32 +92,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-
-
-			<plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>1.0.0</version>
-				<configuration>
-					<baseImage>openjdk:8-jdk-alpine</baseImage>
-					<entryPoint>["java",
-						"-Djava.security.egd=file:/dev/./urandom","-jar",
-						"/${project.build.finalName}.jar"]</entryPoint>
-					<imageName>${docker.baseUri}/libra/${project.artifactId}</imageName>
-					<imageTags>
-						<imageTag>latest</imageTag>
-						<imageTag>${project.version}</imageTag>
-					</imageTags>
-					<resources>
-						<resource>
-							<directory>${project.build.directory}</directory>
-							<include>${project.build.finalName}.jar</include>
-						</resource>
-					</resources>
-					<serverId>repository.devops.libra.tech:8445</serverId>
-					<useGitCommitId>true</useGitCommitId>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
