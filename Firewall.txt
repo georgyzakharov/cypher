@@ -1,0 +1,12 @@
+NOTE: if you are having trouble connecting on the hosting server, check the firewall rules of the hosting server
+
+For servers running UFW (Uncomplicated Firewall):
+
+	1. "sudo ufw status"
+	2. "sudo ufw allow [PORT]/tcp"
+
+Testing connection:
+
+	1. "python  -m SimpleHTTPServer [PORT]"
+	2. Navigate to IP address of hosting server from remote machine
+
