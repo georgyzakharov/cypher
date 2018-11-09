@@ -1,0 +1,33 @@
+1. Go to project directory
+
+HOME---
+		/cypher-frontend
+		/cypher-backend
+		
+2. Open file named "pom.xml"
+
+3. Navigate to the FIRST section with tags labeled as "<build></build>"
+
+4. Copy and paste the following text within the subsection bounded by the tags
+   labeled as "<plugins></plugins>":
+
+   NOTE: PAY ATTENTION to the class name in the "<configuration></configuration>"
+   tags...this name should be the name of the "App.java" class for the project
+   (so "edu.sunypoly.cypher.backend.App", for example, if the project is
+   "cypher-backend")
+
+   	<plugin>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>exec-maven-plugin</artifactId>
+		<version>1.6.0</version>
+		<configuration>
+			<mainClass>edu.sunypoly.cypher.frontend.App</mainClass>
+		</configuration>
+	</plugin>
+
+5. Run the following commands:
+	a. "mvn clean install"
+	b. "mvn verify"
+	c. "mvn compile"
+	d. "mvn package"
+	e. "mvn exec:java"
