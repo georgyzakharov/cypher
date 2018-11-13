@@ -26,6 +26,14 @@ public class HomeController {
 		return model;
 	}
 
+	/*@RequestMapping(value = { "/mainpage" }, method = RequestMethod.GET)
+	public ModelAndView getHome() {
+
+		ModelAndView model = new ModelAndView("home");
+
+		return model;
+	}*/
+	
 	@RequestMapping(value = { "/mainpage" }, method = RequestMethod.GET)
 	public ModelAndView getHome() {
 
