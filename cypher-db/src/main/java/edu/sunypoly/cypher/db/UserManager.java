@@ -9,21 +9,21 @@ Date of Last Revision: 10/25/2018
 Class: CS 370
     Group Members: Dylan, Jacob, Georgy
 
-Description: This is the submanager that manages the teams on the cypher
+Description: This is the submanager that manages the users on the cypher
     software management system. 
 
     This submanager can be used in this fashion:
-        [Mis Manager].[TeamManager].---;
+        [Mis Manager].[UserManager].---;
 
 Specification:
     Public:
-        boolean create(String teamName, String password)
-        boolean update(int teamId, String teamName)
-        boolean delete(int teamId/String teamName)
-        int getId(String teamName)
-        String getName(int teamId)
+        boolean create(String name, String password)
+        boolean update(int userId, String name)
+        boolean delete(int userId/String name)
+        int getId(String name)
+        String getName(int userId)
     Private:
-        boolean createAccount(int teamId, String password)
+        boolean createAccount(int userId, String password)
         
 */
 
@@ -39,42 +39,48 @@ import java.sql.ResultSet;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-public class TeamManager
+public class UserManager
 {
     private static Connection SQLCON = null; 
-    private final int MAX_TEAM_NAME_LENGTH = 50;
+    private final int MAX_NAME_TYPE_LENGTH = 50;
     private final int NOT_EXISTS = -1;
 
-    public TeamManager(Connection INSQLCON)
+    public UserManager(Connection INSQLCON)
     {
         SQLCON = INSQLCON;
     }
 
-    public boolean create(String teamName, String password) throws AlreadyExistsException, NullInputException, InvalidDataException, DoesNotExistException
+    public boolean create(String name, String type, String password) throws AlreadyExistsException, NullInputException, InvalidDataException, DoesNotExistException
     {
         boolean success = false;
         PreparedStatement stmt = null;
-        String query = "INSERT INTO team(name) VALUES (?);";
+        String query = "INSERT INTO user(name, type) VALUES (?, ?);";
         
-        //teamName/password check. Can't be null, can't be empty
-        if(teamName == null || teamName.isEmpty())
-            throw new InvalidDataException("Must provide a team name!");
+        //name/password check. Can't be null, can't be empty
+        if(name == null || name.isEmpty())
+            throw new InvalidDataException("Must provide a name!");
+        if(type == null || type.isEmpty())
+            throw new InvalidDataException("Must provide a type!");
         if(password == null) //password empty check done in AccountManager
             throw new NullInputException("Must provide a password!");
         
-        //Truncate the teamName if it's too long for database
-        if(teamName.length() > MAX_TEAM_NAME_LENGTH)
-            teamName = teamName.substring(0, MAX_TEAM_NAME_LENGTH); 
+        //TRUNCATE TYPE
+        if(type.length() > MAX_NAME_TYPE_LENGTH)
+            type = type.substring(0, MAX_NAME_TYPE_LENGTH);
+        //Truncate the name if it's too long for database
+        if(name.length() > MAX_NAME_TYPE_LENGTH)
+            name = name.substring(0, MAX_NAME_TYPE_LENGTH); 
         
-        //if the team doesnt exist
-        if(getId(teamName) == NOT_EXISTS)
+        //if the user doesnt exist
+        if(getId(name) == NOT_EXISTS)
         {
             try 
             {
                 stmt = SQLCON.prepareStatement(query);
-                stmt.setString(1, teamName);
+                stmt.setString(1, name);
+                stmt.setString(2, type);
                 stmt.executeUpdate();
-                createAccount(getId(teamName), password);
+                createAccount(getId(name), password);
             } 
             catch (SQLException e) 
             {
@@ -82,30 +88,31 @@ public class TeamManager
                 System.err.println("SQLState: " + e.getSQLState());
                 System.err.println("VendorError: " + e.getErrorCode());
             }
-            if(getId(teamName) != NOT_EXISTS)
+            if(getId(name) != NOT_EXISTS)
                 success = true;
         }
         else
-            throw new AlreadyExistsException(teamName + " already exists!");
+            throw new AlreadyExistsException(name + " already exists!");
         return success;
     }
-    public boolean update(int teamId, String teamName) throws DoesNotExistException, AlreadyExistsException, InvalidDataException, NullInputException 
+    public boolean update(int id, String name, String type) throws DoesNotExistException, AlreadyExistsException, InvalidDataException, NullInputException 
     {
         boolean success = false;
         PreparedStatement stmt = null;
         PreparedStatement fkStatement = null;
-        String query = "UPDATE team SET name = ? WHERE id = ?";
-        String fk = "SET FOREIGN_KEY_CHECKS=?;";
+        String query = "UPDATE user SET name = ?, type = ? WHERE id = ?";
+        String fk = "SET FOREIGN_KEY_CHECKS = ?;";
   
-        //check if team name is null
-        if(teamName== null || teamName.isEmpty())
-            throw new NullInputException("Must provide a team name!");
-        
-        //check teamName length, truncate to 50 chars
-        if(teamName.length() > MAX_TEAM_NAME_LENGTH)
-            teamName = teamName.substring(0, MAX_TEAM_NAME_LENGTH); 
+        //check if user name is null
+        if(name == null || name.isEmpty())
+            throw new NullInputException("Must provide a name!");
+        if(type == null || type.isEmpty())
+            throw new InvalidDataException("Must provide a type!");
+        //check name length, truncate to 50 chars
+        if(name.length() > MAX_NAME_TYPE_LENGTH)
+            name = name.substring(0, MAX_NAME_TYPE_LENGTH); 
 
-        if(getName(teamId) != null && (getId(teamName) == NOT_EXISTS)) //old teamName does exist, and newTeamName doesnt
+        if(getName(id) != null && (getId(name) == NOT_EXISTS)) //old name does exist, and newUserName doesnt
         {
             try 
             {
@@ -114,8 +121,9 @@ public class TeamManager
                 fkStatement.executeUpdate();
 
                 stmt = SQLCON.prepareStatement(query);
-                stmt.setString(1, teamName);
-                stmt.setInt(2, teamId);
+                stmt.setString(1, name);
+                stmt.setString(2, type);
+                stmt.setInt(3, id);
                 stmt.executeUpdate();
 
                 fkStatement = SQLCON.prepareStatement(fk);
@@ -128,28 +136,28 @@ public class TeamManager
                 System.err.println("SQLState: " + e.getSQLState());
                 System.err.println("VendorError: " + e.getErrorCode());
             }
-            if(getId(teamName) != NOT_EXISTS)
+            if(getId(name) != NOT_EXISTS)
                 success = true;    
         }
-        else if(getId(teamName) != NOT_EXISTS) //newTeamName already exists
-            throw new AlreadyExistsException(teamName + " already exists!");
-        else //The team youre trying to replace doesnt exist.
-            throw new DoesNotExistException(teamId + " does not exist!");
+        else if(getId(name) != NOT_EXISTS) //newUserName already exists
+            throw new AlreadyExistsException(name + " already exists!");
+        else //The user youre trying to replace doesnt exist.
+            throw new DoesNotExistException(id + " does not exist!");
         
         return success;
     }
 
-    public boolean delete(int teamId) 
+    public boolean delete(int id) 
     {
         boolean success = false;
         PreparedStatement stmt = null;
-        String query = "DELETE FROM team WHERE id = ?;";
-        if(getName(teamId) != null)
+        String query = "DELETE FROM user WHERE id = ?;";
+        if(getName(id) != null)
         {
             try
             {
                 stmt = SQLCON.prepareStatement(query);
-                stmt.setInt(1, teamId);
+                stmt.setInt(1, id);
                 stmt.executeUpdate();
             } 
             catch (SQLException e) 
@@ -158,63 +166,63 @@ public class TeamManager
                 System.err.println("SQLState: " + e.getSQLState());
                 System.err.println("VendorError: " + e.getErrorCode());
             }
-            if(getName(teamId) == null)
+            if(getName(id) == null)
                 success = true;
         }       
         return success;
     }
-    public boolean delete(String teamName)
+    public boolean delete(String name)
     {   
-        //Truncate the teamName if it's too long for database
-        if(teamName.length() > MAX_TEAM_NAME_LENGTH)
-            teamName = teamName.substring(0, MAX_TEAM_NAME_LENGTH);
+        //Truncate the name if it's too long for database
+        if(name.length() > MAX_NAME_TYPE_LENGTH)
+            name = name.substring(0, MAX_NAME_TYPE_LENGTH);
         
-        return delete(getId(teamName));
+        return delete(getId(name));
     }
 
 
-    public int getId(String teamName) 
+    public int getId(String name) 
     {
-        int teamId = NOT_EXISTS;
+        int userId = NOT_EXISTS;
         PreparedStatement stmt = null;
-        String query = "SELECT id FROM team WHERE name = ?;";
+        String query = "SELECT id FROM user WHERE name = ?;";
 
-        //Truncate the teamName if it's too long for database
-        if(teamName.length() > MAX_TEAM_NAME_LENGTH)
-            teamName = teamName.substring(0, MAX_TEAM_NAME_LENGTH);
+        //Truncate the name if it's too long for database
+        if(name.length() > MAX_NAME_TYPE_LENGTH)
+            name = name.substring(0, MAX_NAME_TYPE_LENGTH);
         
-        if(teamName != null)
+        if(name != null)
             try 
             {
                 stmt = SQLCON.prepareStatement(query);
-                stmt.setString(1, teamName);
+                stmt.setString(1, name);
                 ResultSet result = stmt.executeQuery();
                 result.next();
-                teamId = result.getInt("id");
+                userId = result.getInt("id");
             } 
             catch (SQLException e) {}
-        return teamId;
+        return userId;
     }
 
-    public String getName(int teamId) 
+    public String getName(int id) 
     {
-        String teamName = null;
+        String name = null;
         PreparedStatement stmt = null;
-        String query = "SELECT name FROM team WHERE id = ?;";
-        if(teamId != NOT_EXISTS)
+        String query = "SELECT name FROM user WHERE id = ?;";
+        if(id != NOT_EXISTS)
             try 
             {
                 stmt = SQLCON.prepareStatement(query);
-                stmt.setInt(1, teamId);
+                stmt.setInt(1, id);
                 ResultSet result = stmt.executeQuery();
                 result.next();
-                teamName = result.getString("name");
+                name = result.getString("name");
             } 
             catch (SQLException e) {}
-        return teamName;
+        return name;
     }
 
-    private boolean createAccount(int teamId, String password) throws InvalidDataException
+    private boolean createAccount(int id, String password) throws InvalidDataException
     {
         boolean valid = false;
         Pattern pattern;
@@ -243,7 +251,7 @@ public class TeamManager
         try
         {
             stmt = SQLCON.prepareStatement(query);
-            stmt.setInt(1, teamId);
+            stmt.setInt(1, id);
             stmt.setString(2, String.format("%032x", new BigInteger(hash)));
             stmt.executeUpdate();
         }

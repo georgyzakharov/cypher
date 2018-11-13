@@ -24,22 +24,22 @@ public class SolutionManager
     private static Connection SQLCON = null; 
     private static final int MAX_SOLUTION_NAME_LENGTH = 50;
     private static final int LONGBLOB_MAX_SIZE = 2000000000; //2GB
-    private TeamManager solutionTeamManager = null;
+    private UserManager solutionUserManager = null;
     private ProblemManager solutionProblemManager = null;
 
     public SolutionManager(Connection INSQLCON)
     {
         SQLCON = INSQLCON;
-        solutionTeamManager = new TeamManager(INSQLCON);
+        solutionUserManager = new UserManager(INSQLCON);
         solutionProblemManager = new ProblemManager(INSQLCON);
     }
 
-    public boolean create(String solutionName, int teamId, int problemId, String language, byte[] solution) throws AlreadyExistsException, NullInputException, InvalidDataException, DoesNotExistException
+    public boolean create(String solutionName, int userId, int problemId, String language, byte[] solution) throws AlreadyExistsException, NullInputException, InvalidDataException, DoesNotExistException
     {
         boolean success = false;
         PreparedStatement nameStmt = null;
         PreparedStatement storageStmt = null;
-        String nameQuery = "INSERT INTO solution(name, team_id, problem_id, language) VALUES (?,?,?,?);";
+        String nameQuery = "INSERT INTO solution(name, user_id, problem_id, language) VALUES (?,?,?,?);";
         String storageQuery = "INSERT INTO solution_storage(id, solution) VALUES (?,?);";
         
         //noprovided
@@ -52,10 +52,10 @@ public class SolutionManager
         else if(solutionName.length() > MAX_SOLUTION_NAME_LENGTH)
             solutionName = solutionName.substring(0, MAX_SOLUTION_NAME_LENGTH);
 
-        if(teamId < 0)
-            throw new InvalidDataException("Invalid teamID, out of range");
-        else if(solutionTeamManager.getName(teamId) == null)
-            throw new DoesNotExistException("Invalid teamID, does not exist");
+        if(userId < 0)
+            throw new InvalidDataException("Invalid UserID, out of range");
+        else if(solutionUserManager.getName(userId) == null)
+            throw new DoesNotExistException("Invalid UserID, does not exist");
         if(problemId < 0)
             throw new InvalidDataException("Invalid problemID, out of range");
         else if(solutionProblemManager.getName(problemId) == null)
@@ -79,7 +79,7 @@ public class SolutionManager
             {
                 nameStmt = SQLCON.prepareStatement(nameQuery);
                 nameStmt.setString(1, solutionName);
-                nameStmt.setInt(2, teamId);
+                nameStmt.setInt(2, userId);
                 nameStmt.setInt(3, problemId);
                 nameStmt.setString(4, language);
                 nameStmt.execute();
@@ -103,13 +103,13 @@ public class SolutionManager
             throw new AlreadyExistsException(solutionName + "already exists!");
         return success;
     }
-    public boolean update(int solutionId, String solutionName, int teamId, int problemId, String language, int score, byte[] solution) throws DoesNotExistException, AlreadyExistsException, NullInputException, InvalidDataException
+    public boolean update(int solutionId, String solutionName, int userId, int problemId, String language, int score, byte[] solution) throws DoesNotExistException, AlreadyExistsException, NullInputException, InvalidDataException
     {
         boolean success = false;
         PreparedStatement fkStmt = null;
         PreparedStatement stmt = null;
         String fk = "SET FOREIGN_KEY_CHECKS=?;";
-        String nameQuery = "UPDATE solution SET name = ?, team_id = ?, problem_id = ?, language = ?, score = ? WHERE id = ?";
+        String nameQuery = "UPDATE solution SET name = ?, user_id = ?, user_id = ?, language = ?, score = ? WHERE id = ?";
         String storageQuery = "UPDATE solution_storage SET solution = ? WHERE id = ?";
         
         if(solutionId < 0)
@@ -124,10 +124,10 @@ public class SolutionManager
         else if(solutionName.length() > MAX_SOLUTION_NAME_LENGTH)
             solutionName = solutionName.substring(0, MAX_SOLUTION_NAME_LENGTH);
 
-        if(teamId < 0)
-            throw new InvalidDataException("Invalid teamID, out of range");
-        else if(solutionTeamManager.getName(teamId) == null)
-            throw new DoesNotExistException("Invalid teamID, does not exist");
+        if(userId < 0)
+            throw new InvalidDataException("Invalid userID, out of range");
+        else if(solutionUserManager.getName(userId) == null)
+            throw new DoesNotExistException("Invalid userID, does not exist");
         if(problemId < 0)
             throw new InvalidDataException("Invalid problemID, out of range");
         else if(solutionProblemManager.getName(problemId) == null)
@@ -152,7 +152,7 @@ public class SolutionManager
 
                 stmt = SQLCON.prepareStatement(nameQuery);
                 stmt.setString(1, solutionName);
-                stmt.setInt(2, teamId);
+                stmt.setInt(2, userId);
                 stmt.setInt(3, problemId);
                 stmt.setString(4, language);
                 stmt.setInt(5, score);
@@ -180,7 +180,7 @@ public class SolutionManager
         else if(getName(solutionId) == null)
             throw new DoesNotExistException(solutionId + " does not exist!");
         else
-            throw new AlreadyExistsException(solutionId + " is already a team!");   
+            throw new AlreadyExistsException(solutionId + " is already a user!");   
 
         return success;
 
@@ -453,11 +453,11 @@ public class SolutionManager
             }
         return problemId;
     }
-    public int getTeamId(String solutionName)
+    public int getUserId(String solutionName)
     {
-        int teamId = -1;
+        int userId = -1;
         PreparedStatement stmt = null;
-        String query = "SELECT team_id FROM solution WHERE name = ?;";
+        String query = "SELECT user_id FROM solution WHERE name = ?;";
 
         // too long, truncate
         if(solutionName.length() > MAX_SOLUTION_NAME_LENGTH)
@@ -469,7 +469,7 @@ public class SolutionManager
                 stmt.setString(1, solutionName);
                 ResultSet result = stmt.executeQuery();
                 result.next();
-                teamId = result.getInt("team_id");
+                userId = result.getInt("user_id");
             }
             catch (SQLException e) 
             {
@@ -477,13 +477,13 @@ public class SolutionManager
                 System.err.println("SQLState: " + e.getSQLState());
                 System.err.println("VendorError: " + e.getErrorCode());
             }
-        return teamId;
+        return userId;
     }
-    public int getTeamId(int solutionId)
+    public int getUserId(int solutionId)
     {
-        int teamId = -1;
+        int userId = -1;
         PreparedStatement stmt = null;
-        String query = "SELECT team_id FROM solution WHERE id = ?;";
+        String query = "SELECT user_id FROM solution WHERE id = ?;";
         if(getName(solutionId) != null)
             try
             {
@@ -491,7 +491,7 @@ public class SolutionManager
                 stmt.setInt(1, solutionId);
                 ResultSet result = stmt.executeQuery();
                 result.next();
-                teamId = result.getInt("team_id");
+                userId = result.getInt("user_id");
             }
             catch (SQLException e) 
             {
@@ -499,7 +499,7 @@ public class SolutionManager
                 System.err.println("SQLState: " + e.getSQLState());
                 System.err.println("VendorError: " + e.getErrorCode());
             }
-        return teamId;
+        return userId;
     }
 
     public String getName(int solutionId)

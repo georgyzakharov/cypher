@@ -27,7 +27,7 @@ import java.util.regex.*;
 public class AccountManager
 {
     private static Connection SQLCON = null;
-    private TeamManager accTeams = null;
+    private UserManager accUsers = null;
     public AccountManager(Connection INSQLCON)
     {
         SQLCON = INSQLCON; 
@@ -42,7 +42,7 @@ public class AccountManager
         byte[] pwHash = null;
         String pwString = null;
         MessageDigest digest = null;
-        accTeams = new TeamManager(SQLCON);
+        accUsers = new UserManager(SQLCON);
 
         try
         {
@@ -57,12 +57,12 @@ public class AccountManager
         if(username.isEmpty() || password.isEmpty())
             throw new InvalidDataException("Must provide a username AND a password, at least 1 char");
 
-        //Check if the team exists
-        if(accTeams.getId(username) != -1)
+        //Check if the user exists
+        if(accUsers.getId(username) != -1)
             try 
             {
                 stmt = SQLCON.prepareStatement(query);
-                stmt.setInt(1, accTeams.getId(username));
+                stmt.setInt(1, accUsers.getId(username));
                 ResultSet result = stmt.executeQuery();
                 result.next();
                 dbHash = result.getBytes("password");
@@ -70,7 +70,7 @@ public class AccountManager
             } 
             catch (SQLException e) {}
         else
-            throw new DoesNotExistException("Team " + username + " already exists!");
+            throw new DoesNotExistException("User " + username + " already exists!");
         
         //return boolean that indicates if the stored has and the generated hash are equal
         return pwString.equals(dbString);

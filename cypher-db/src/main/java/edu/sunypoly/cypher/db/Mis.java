@@ -29,7 +29,7 @@ public final class Mis
     private Connection SQL_CONNECTION = null;
     
     //Variables for the various submodules
-    public final TeamManager Team;
+    public final UserManager User;
     public final ProblemManager Problem;
     public final SolutionManager Solution;
     public final AccountManager Account;
@@ -46,8 +46,8 @@ public final class Mis
             System.err.println("CRITICAL ERROR IN SQL DATABASE CONNECTION!");
             e.printStackTrace();
         }
-        //Initialize Team Manager
-        Team = new TeamManager(SQL_CONNECTION);
+        //Initialize User Manager
+        User = new UserManager(SQL_CONNECTION);
         //Initialize Problem Manager
         Problem = new ProblemManager(SQL_CONNECTION);    
         //Initialize Solution Manager
