@@ -1,27 +1,13 @@
 package edu.sunypoly.cypher.db;
 
-/*
-Author: Austin Monson(Sannity)
-
-Date of Last Revision: 10/25/2018
-
-Class: CS 370
-    Group Members: Dylan, Jacob, Georgy
-
-Description: The top manager to the group of database manager classes.
-    This class initializes the many different sub-managers that complete
-    the set of database managers.
-
-    The submanagers can be used in this fashion:
-        [Mis Manager].[Sub-Manager].---;
-
-Specification:
-    Mis(String sqlUrl, String sqlUsername, String sqlPassword)
-        - creates the SQL connection and sends that to the sub managers
-*/
-
 import java.sql.Connection;
 import java.sql.DriverManager;
+
+/**
+ * The top manager that controls all submanagers in the cypher database api
+ * @author Austin Monson (Sannity)
+ * @since 11/13/2018
+ */
 
 public final class Mis
 {
@@ -29,11 +15,22 @@ public final class Mis
     private Connection SQL_CONNECTION = null;
     
     //Variables for the various submodules
+    /**User Sub-Manager*/
     public final UserManager User;
+    /**Problem Sub-Manager*/
     public final ProblemManager Problem;
+    /**Solution Sub-Manager*/
     public final SolutionManager Solution;
+    /**Account Sub-Manager*/
     public final AccountManager Account;
-
+    /**
+     * The constructor class will initiate the sub-managers for the Mis class
+     * 
+     * @param sqlUrl The SQL URL for the specified system
+     * @param sqlUsername The specific username for the SQL URL
+     * @param sqlPassword The password for the specified username
+     * @return Initialized sub-managers, User, Problem, Solution, and Account
+     */
     public Mis(String sqlUrl, String sqlUsername, String sqlPassword)
     {
         try
