@@ -1,38 +1,37 @@
 package edu.sunypoly.cypher.db;
 
-/*
-Author: Austin Monson(Sannity)
-
-
-Date of Last Revision: 10/30/2018
-
-Class: CS 370
-    Group Members: Dylan, Jacob, Georgy
-
-Description: The manager that manages the problems in the cypher 
-    software management suite.
-
-    The problem manager can be used in this fashion:
-        [Mis Manager].[Problem-Manager].---;
-
-Specification: 
-    ---
-*/
-
 import java.sql.*;
-
+/**
+ * The manager for the problems in the cypher database
+ * @author Austin Monson (Sannity)
+ * @since 11/13/2018
+ */
 public class ProblemManager
 {
     private static Connection SQLCON = null; 
     private static final int MAX_PROBLEM_NAME_LENGTH = 50;
     private static final int LONGBLOB_MAX_SIZE = 2000000000; //2GB
 
+    /**
+     * sets the passed sql connection to the local sql connection
+     * @param INSQLCON parameter passed into the manager from the Mis class 
+     */
     public ProblemManager(Connection INSQLCON)
     {
         SQLCON = INSQLCON;
     }
 
-    /* Problem Manager */
+    /**
+     * creates a problem in the database
+     * @param problemName the name of the problem
+     * @param problemDescription the description of the problem
+     * @param problemTestCode the test code used to test the solutions
+     * @see SolutionManager
+     * @throws AlreadyExistsException there is already a problem with that name
+     * @throws NullInputException an input is null when it should not be
+     * @throws InvalidDataException invalid data was sent through one input
+     * @return Boolean value representing successful creation
+     */
     public boolean create(String problemName, byte[] problemDescription, byte[] problemTestCode) throws AlreadyExistsException, NullInputException, InvalidDataException
     {
         boolean success = false;
@@ -90,7 +89,19 @@ public class ProblemManager
  
         return success;
     }
-
+    /**
+     * updates a problem in the database
+     * @param problemId the id of the problem to update
+     * @param problemName the name of the problem
+     * @param problemDescription the description of the problem
+     * @param problemTestCode the test code used to test the solutions
+     * @see SolutionManager
+     * @throws DoesNotExistException there is no problem with that id
+     * @throws AlreadyExistsException there is already a problem with that name
+     * @throws NullInputException an input is null when it should not be
+     * @throws InvalidDataException invalid data was sent through one input
+     * @return Boolean value representing successful update
+     */
     public boolean update(int problemId, String problemName, byte[] problemDescription, byte[] problemTestCode) throws DoesNotExistException, AlreadyExistsException, NullInputException, InvalidDataException
     {
         boolean success = false;
@@ -158,15 +169,11 @@ public class ProblemManager
             throw new AlreadyExistsException(problemName + " is a used problemName");
         return success;
     }
-    public boolean delete(String problemName)
-    {
-        //if problemname is too long, truncate
-        if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
-            problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
-            
-        return delete(getId(problemName));
-    }
-    
+    /**
+     * deletes the problem with the provided id
+     * @param problemId the id to delete
+     * @return Boolean value representing successful deletion
+     */
     public boolean delete(int problemId)
     {
         boolean success = false;
@@ -176,14 +183,6 @@ public class ProblemManager
         {
             try
             {
-                //DEPRECIATED, DATABASE NOW UPDATES THIS INTERNALLY
-                /*
-                query = "DELETE FROM problem_storage WHERE id = ?;";
-                stmt = SQLCON.prepareStatement(query);
-                stmt.setInt(1, problemId);
-                stmt.executeUpdate();
-                */
-
                 query = "DELETE FROM problem WHERE id = ?;";
                 stmt = SQLCON.prepareStatement(query);
                 stmt.setInt(1, problemId);
@@ -195,7 +194,24 @@ public class ProblemManager
         }
         return success;
     }
-    
+    /**
+     * deletes the problem with the provided id
+     * @param problemName the name to delete
+     * @return Boolean value representing successful deletion
+     */
+     public boolean delete(String problemName)
+    {
+        //if problemname is too long, truncate
+        if(problemName.length() > MAX_PROBLEM_NAME_LENGTH)
+            problemName = problemName.substring(0, MAX_PROBLEM_NAME_LENGTH);
+            
+        return delete(getId(problemName));
+    }
+    /**
+     * getter of the id of the problem
+     * @param problemName the name of the problem to get the id of
+     * @return the id of the problem
+     */
     public int getId(String problemName) 
     {
         int problemId = -1;
@@ -217,6 +233,11 @@ public class ProblemManager
         return problemId;
     }
     
+    /**
+     * getter of the name of the problem
+     * @param problemId the id of the problem to get the name of
+     * @return the name of the problem
+     */
     public String getName(int problemId) 
     {
         String problemName = null;
@@ -234,7 +255,11 @@ public class ProblemManager
             catch (SQLException e) {}
         return problemName;
     }
-
+    /**
+     * getter of the problem descriprion
+     * @param problemId the id to get the description of
+     * @return the description of the problem
+     */
     public byte[] getDescription(int problemId)
     {
         byte[] problemDescription = null;
@@ -252,7 +277,11 @@ public class ProblemManager
             catch (SQLException e) {}
         return problemDescription;
     }
-
+    /**
+     * getter of the problem descriprion
+     * @param problemName the name to get the description of
+     * @return the description of the problem
+     */
     public byte[] getDescription(String problemName)
     {
         byte[] problemDescription = null;
@@ -273,7 +302,11 @@ public class ProblemManager
             catch (SQLException e) {}
         return problemDescription;
     }
-    
+    /**
+     * getter of the problem test code
+     * @param problemId id of the problem to get the test code of
+     * @return the test code of the problem
+     */
     public byte[] getTestCode(int problemId)
     {
         byte[] problemTestCode = null;
@@ -291,7 +324,11 @@ public class ProblemManager
             catch (SQLException e) {}
         return problemTestCode;
     }
-
+    /**
+     * getter of the problem test code
+     * @param problemName name of the problem to get the test code of
+     * @return the test code of the problem
+     */
     public byte[] getTestCode(String problemName)
     {
         byte[] problemTestCode = null;

@@ -29,7 +29,6 @@ public final class Mis
      * @param sqlUrl The SQL URL for the specified system
      * @param sqlUsername The specific username for the SQL URL
      * @param sqlPassword The password for the specified username
-     * @return Initialized sub-managers, User, Problem, Solution, and Account
      */
     public Mis(String sqlUrl, String sqlUsername, String sqlPassword)
     {
