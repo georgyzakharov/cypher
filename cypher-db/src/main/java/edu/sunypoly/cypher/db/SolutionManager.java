@@ -1,24 +1,12 @@
 package edu.sunypoly.cypher.db;
-/*
-Author: Austin Monson(Sannity)
-
-Date of Last Revision: 10/30/2018
-
-Class: CS 370
-    Group Members: Dylan, Jacob, Georgy
-
-Description: The manager that manages the solutions in the cypher 
-    software management suite.
-
-    The problem manager can be used in this fashion:
-        [Mis Manager].[Solution Manager].---;
-
-Specification: 
-    ---
-*/
 
 import java.sql.*;
 
+/**
+ * The manager for the problems in the cypher database
+ * @author Austin Monson (Sannity)
+ * @since 11/13/2018
+ */
 public class SolutionManager
 {
     private static Connection SQLCON = null; 
@@ -27,13 +15,29 @@ public class SolutionManager
     private UserManager solutionUserManager = null;
     private ProblemManager solutionProblemManager = null;
 
+    /**
+     * sets the passed sql connection to the local sql connection
+     * @param INSQLCON parameter passed into the manager from the Mis class 
+     */
     public SolutionManager(Connection INSQLCON)
     {
         SQLCON = INSQLCON;
         solutionUserManager = new UserManager(INSQLCON);
         solutionProblemManager = new ProblemManager(INSQLCON);
     }
-
+    /**
+     * creates a solution in the database
+     * @param solutionName the name of the problem
+     * @param userId the id of the user that made the problem
+     * @param problemId the id of the problem the solution is for
+     * @param language the language the solution is written in
+     * @param solution the solution itself
+     * @return Boolean success value based on successful insertion
+     * @throws AlreadyExistsException a solution with that name already exists
+     * @throws NullInputException an input is null when it should not have been
+     * @throws InvalidDataException invalid data was given to the function
+     * @throws DoesNotExistException the user or problem does not exist
+     */
     public boolean create(String solutionName, int userId, int problemId, String language, byte[] solution) throws AlreadyExistsException, NullInputException, InvalidDataException, DoesNotExistException
     {
         boolean success = false;
@@ -103,6 +107,22 @@ public class SolutionManager
             throw new AlreadyExistsException(solutionName + "already exists!");
         return success;
     }
+
+    /**
+     * updates a solution in the database
+     * @param solutionId the id of the solution to change
+     * @param solutionName the name of the problem
+     * @param userId the id of the user that made the problem
+     * @param problemId the id of the problem the solution is for
+     * @param language the language the solution is written in
+     * @param score the score that the solution recieved
+     * @param solution the solution itself
+     * @return Boolean success value based on successful insertion
+     * @throws AlreadyExistsException a solution with that name already exists
+     * @throws NullInputException an input is null when it should not have been
+     * @throws InvalidDataException invalid data was given to the function
+     * @throws DoesNotExistException the user, problem, or solution does not exist
+     */
     public boolean update(int solutionId, String solutionName, int userId, int problemId, String language, int score, byte[] solution) throws DoesNotExistException, AlreadyExistsException, NullInputException, InvalidDataException
     {
         boolean success = false;
@@ -185,6 +205,11 @@ public class SolutionManager
         return success;
 
     }
+    /**
+     * deltes a solution
+     * @param solutionId id of the solution to delete
+     * @return Boolean value based on successful deletion
+     */
     public boolean delete(int solutionId)
     {
         boolean success = false;
@@ -220,6 +245,11 @@ public class SolutionManager
         return success;
     }
     
+    /**
+     * deltes a solution
+     * @param solutionName name of the solution to delete
+     * @return Boolean value based on successful deletion
+     */
     public boolean delete(String solutionName)
     {
         boolean success = false;
@@ -259,7 +289,11 @@ public class SolutionManager
         }
         return success;
     }
-
+    /**
+     * getter of the solution
+     * @param solutionName the name of the solution to get
+     * @return the solution in bytes
+     */
     public byte[] getSolution(String solutionName)
     {
         byte[] solution = null;
@@ -287,6 +321,11 @@ public class SolutionManager
         return solution;
     
     }
+    /**
+     * getter of the solution
+     * @param solutionId the id of the solution to get
+     * @return the solution in bytes
+     */
     public byte[] getSolution(int solutionId)
     {
         byte[] solution = null;
@@ -309,6 +348,11 @@ public class SolutionManager
             }
         return solution;
     }
+    /**
+     * getter of the score
+     * @param solutionName the name of the solution
+     * @return the score of the solution
+     */
     public int getScore(String solutionName)
     {
         int score = -1;
@@ -335,6 +379,11 @@ public class SolutionManager
             }
         return score;
     }
+    /**
+     * getter of the score
+     * @param solutionId the id of the solution
+     * @return the score of the solution
+     */
     public int getScore(int solutionId)
     {
         int score = -1;
@@ -357,6 +406,11 @@ public class SolutionManager
             }
         return score;
     }
+    /**
+     * getter of the language of the solution
+     * @param solutionName the solution name
+     * @return the language the solution is written in
+     */
     public String getLanguage(String solutionName)
     {
         String language = null;
@@ -383,6 +437,11 @@ public class SolutionManager
             }
         return language;
     }
+    /**
+     * getter of the language of the solution
+     * @param solutionId the solution id
+     * @return the language the solution is written in
+     */
     public String getLanguage(int solutionId)
     {
         String language = null;
@@ -405,6 +464,11 @@ public class SolutionManager
             }
         return language;
     }
+    /**
+     * getter of the problemId the solution is associated to
+     * @param solutionId the solution id
+     * @return the problem id
+     */
     public int getProblemId(int solutionId)
     {
         int problemId = -1;
@@ -427,6 +491,11 @@ public class SolutionManager
             }
         return problemId;
     }
+        /**
+     * getter of the problemId the solution is associated to
+     * @param solutionName the solution name
+     * @return the problem id
+     */
     public int getProblemId(String solutionName)
     {
         int problemId = -1;
@@ -453,6 +522,11 @@ public class SolutionManager
             }
         return problemId;
     }
+    /**
+     * getter of the user id associated with the solution
+     * @param solutionName the solution name
+     * @return the user id
+     */
     public int getUserId(String solutionName)
     {
         int userId = -1;
@@ -479,6 +553,12 @@ public class SolutionManager
             }
         return userId;
     }
+    
+    /**
+     * getter of the user id associated with the solution
+     * @param solutionId the solution Id
+     * @return the user id
+     */
     public int getUserId(int solutionId)
     {
         int userId = -1;
@@ -501,7 +581,11 @@ public class SolutionManager
             }
         return userId;
     }
-
+    /**
+     * getter of the unique solution name
+     * @param solutionId the id of the solution
+     * @return the solution name
+     */
     public String getName(int solutionId)
     {
         String solutionName = null;
@@ -523,6 +607,11 @@ public class SolutionManager
         return solutionName;
     }
 
+    /**
+     * getter of the unique solution id
+     * @param solutionName the name of the solution
+     * @return the solution id
+     */
     public int getId(String solutionName)
     {
         int solutionId = -1;

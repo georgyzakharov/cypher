@@ -27,7 +27,6 @@ Specification:
         
 */
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -39,18 +38,36 @@ import java.sql.ResultSet;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+/**
+ * The submanager that controls the users of the cypher management system
+ * @author Austin Monson (Sannity)
+ * @since 11/13/2018
+ */
 public class UserManager
 {
     private static Connection SQLCON = null; 
     private final int MAX_NAME_TYPE_LENGTH = 50;
     private final int NOT_EXISTS = -1;
-
+    /**
+     * sets the passed sql connection to the local sql connection
+     * @param INSQLCON parameter passed into the manager from the Mis class 
+     */
     public UserManager(Connection INSQLCON)
     {
         SQLCON = INSQLCON;
     }
-
-    public boolean create(String name, String type, String password) throws AlreadyExistsException, NullInputException, InvalidDataException, DoesNotExistException
+    /**
+     * Creates a user and inserts the specified values into the database tables. Also hashes and inserts the password into the account table in the databse
+     * @see AccountManager
+     * @param name The name for the user. Max 50 chars
+     * @param type The type of user (proctor, team, administrator)
+     * @param password The password for the user
+     * @return Boolean value representing successful insertion into the database
+     * @throws AlreadyExistsException There is already a user with the name
+     * @throws NullInputException One of the inputs are NULL, and cannot be
+     * @throws InvalidDataException One of the inputs are not correctly formatted
+     */
+    public boolean create(String name, String type, String password) throws AlreadyExistsException, NullInputException, InvalidDataException
     {
         boolean success = false;
         PreparedStatement stmt = null;
@@ -95,6 +112,18 @@ public class UserManager
             throw new AlreadyExistsException(name + " already exists!");
         return success;
     }
+    /**
+     * This function allows the updating of a user, you must specify all values of user to update the user
+     * @see getId
+     * @param id The id of the team you are updating
+     * @param name The name for the user. Max 50 chars
+     * @param type The type of user (proctor, team, administrator)
+     * @return Boolean value representing sucessful updating of tuple
+     * @throws DoesNotExistException There is no user with that id
+     * @throws AlreadyExistsException There is already a user with the specified name
+     * @throws InvalidDataException Incorrectly formatted data was passed to the function
+     * @throws NullInputException One of the inputs to the function are NULL and shouldn't be
+      */
     public boolean update(int id, String name, String type) throws DoesNotExistException, AlreadyExistsException, InvalidDataException, NullInputException 
     {
         boolean success = false;
@@ -146,7 +175,15 @@ public class UserManager
         
         return success;
     }
-
+    /**
+     * Deletes a user based on it's id
+     * <p>
+     * *Note: Anything that references this user will also be deleted as a result*
+     * </p>
+     * @see getId
+     * @param id Id of the user to delete
+     * @return Boolean value representing successful deletion
+     */
     public boolean delete(int id) 
     {
         boolean success = false;
@@ -171,6 +208,15 @@ public class UserManager
         }       
         return success;
     }
+    /**
+     * Deletes a user based on it's name
+     * <p>
+     * *Note: Anything that references this user will also be deleted as a result*
+     * </p>
+     * @see getId
+     * @param name Name of the user to delete
+     * @return Boolean value representing successful deletion
+     */
     public boolean delete(String name)
     {   
         //Truncate the name if it's too long for database
@@ -180,7 +226,11 @@ public class UserManager
         return delete(getId(name));
     }
 
-
+    /**
+     * getter of the id for the user with the specified name
+     * @param name the name of the user that you want the id of
+     * @return id of the user
+     */
     public int getId(String name) 
     {
         int userId = NOT_EXISTS;
@@ -203,7 +253,11 @@ public class UserManager
             catch (SQLException e) {}
         return userId;
     }
-
+    /**
+     * getter of the name for the user with the specified id
+     * @param id the id of the user you want the name of
+     * @return name of the user
+     */
     public String getName(int id) 
     {
         String name = null;
@@ -220,6 +274,45 @@ public class UserManager
             } 
             catch (SQLException e) {}
         return name;
+    }
+    /**
+     * getter of the type of user
+     * @param id id of the user to get the type of
+     * @return type of the user
+     */
+    public String getType(int id) 
+    {
+        String type = null;
+        PreparedStatement stmt = null;
+        String query = "SELECT type FROM user WHERE id = ?;";
+        if(id != NOT_EXISTS)
+            try 
+            {
+                stmt = SQLCON.prepareStatement(query);
+                stmt.setInt(1, id);
+                ResultSet result = stmt.executeQuery();
+                result.next();
+                type = result.getString("type");
+            } 
+            catch (SQLException e) {}
+        return type;
+    }
+    /**
+     * getter of the type of user
+     * @param name name of the user to get the type of
+     * @return type of the user
+     */
+    public String getType(String name) 
+    {
+        String type = null;
+
+        //Truncate the name if it's too long for database
+        if(name.length() > MAX_NAME_TYPE_LENGTH)
+            name = name.substring(0, MAX_NAME_TYPE_LENGTH);
+        
+        type = getType(getId(name));
+        
+        return type;
     }
 
     private boolean createAccount(int id, String password) throws InvalidDataException

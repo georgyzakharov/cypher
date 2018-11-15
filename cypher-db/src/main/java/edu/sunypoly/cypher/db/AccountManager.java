@@ -24,15 +24,33 @@ import java.sql.*;
 import java.util.Arrays;
 import java.util.regex.*;
 
+/**
+ * The submanager that controls the accounts of the cypher management system
+ * @author Austin Monson (Sannity)
+ * @since 11/13/2018
+ */
 public class AccountManager
 {
     private static Connection SQLCON = null;
     private UserManager accUsers = null;
+    /**
+     * sets the passed sql connection to the local sql connection
+     * @param INSQLCON parameter passed into the manager from the Mis class 
+     */
     public AccountManager(Connection INSQLCON)
     {
         SQLCON = INSQLCON; 
     }
 
+    /**
+     * Checks the provided password to see if it matches the one stored in the database. 
+     * @param username the name of the user to check the password of
+     * @param password the entered password to check if its in the database
+     * @return Boolean value representing if the entered password matches the value in the databse
+     * @throws NullInputException an input was null when it should not have been
+     * @throws InvalidDataException invalid data was provided to the function
+     * @throws DoesNotExistException the user does not exists
+     */
     public boolean validate(String username, String password) throws NullInputException, InvalidDataException, DoesNotExistException
     {
         PreparedStatement stmt = null;
