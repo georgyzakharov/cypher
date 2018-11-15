@@ -11,12 +11,12 @@ import edu.sunypoly.cypher.frontend.service.ApplicationExecutorService;
 
 @Controller
 public class HomeController {
-	private String [] language_array = {"Python","Java","C++","C"};
+	private String[] language_array = { "Python", "Java", "C++", "C" };
 
 	// Spring injection
 	@Resource
 	private ApplicationExecutorService service;
-	
+
 	// Home page with all the UI
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
 	public ModelAndView getLogin() {
@@ -26,27 +26,21 @@ public class HomeController {
 		return model;
 	}
 
-	/*@RequestMapping(value = { "/mainpage" }, method = RequestMethod.GET)
-	public ModelAndView getHome() {
-
-		ModelAndView model = new ModelAndView("home");
-
-		return model;
-	}*/
-	
 	@RequestMapping(value = { "/mainpage" }, method = RequestMethod.GET)
-	public ModelAndView getHome() {
-
-		ModelAndView model = new ModelAndView("home");
-
-		return model;
+	public ModelAndView getHome(int typeOfUser) {
+		if (typeOfUser == 0) {
+			ModelAndView model = new ModelAndView("home");
+			return model;
+		} else if (typeOfUser == 1) {
+			ModelAndView model = new ModelAndView("problem");
+			return model;
+		}
+		return null;
 	}
-	
+
 	@RequestMapping(value = { "/submission" }, method = RequestMethod.POST)
 	public ModelAndView getAnswer(int language, String applicationCode, String test) {
-		
-		
-		
+
 		ModelAndView model = new ModelAndView("answer");
 
 		model.addObject("language", language);
@@ -56,20 +50,4 @@ public class HomeController {
 
 		return model;
 	}
-
-	/*
-	@RequestMapping(value = { "/proctor" }, method = RequestMethod.GET)
-	public ModelAndView getProblem() {
-
-		ModelAndView model = new ModelAndView("problem");
-
-		return model;
-	}
-	
-	
-	@RequestMapping(value = {"/post"}, method = RequestMethod.POST)
-	public ModelAndView 
-	
-	 */
-
 }

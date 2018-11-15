@@ -11,6 +11,12 @@
 <body>
     <h1 style="margin-top:50px;">Login:</h1>
     <form action="/mainpage" method="get">
+        <div class="dropdown">
+        	<select required name="typeOfUser">
+				<option value="0">User</option>
+				<option value="1">Proctor</option>
+        	</select>
+        </div>
         <h3>Username: <input type="text" class="loginTextBoxes" required placeholder="Username"></h3>
         <br />
         <h3>Password:  <input type="password" class="loginTextBoxes" required placeholder="Password"></h3>
