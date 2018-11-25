@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 
 @ImportResource("classpath*:/*-context.xml")
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages= {"edu.sunypoly.cypher"})
 public class App {
 	//this Spring application will start up any Controllers that exist in my project 
 	public static void main(String[] args) {

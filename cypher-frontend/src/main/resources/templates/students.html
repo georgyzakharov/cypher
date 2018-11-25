@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cypher</title>
+	<link href="styles.css" rel="stylesheet" type="text/css" media="all">
+</head>
+<body>
+
+	<div class = "header">
+	    <a style="font-weight: 600" href='home.html'>--Cypher-CMS--</a>
+	    <a style="float:right;" href='scores.html'>Scores</a>
+	    <a style="float:right;" href='login.html'>Login</a>
+	</div>
+
+	<br/>
+
+	<table style="margin-top:50px;">
+		<tr th:each="student: ${studentList}">
+		    <td th:text="${student.studentNumber}" />
+		    <td th:text="${student.name}" />
+		    <td th:text="${student.clazz}" />
+		    <td th:text="${student.major}" />
+		</tr>
+	</table>
+</body>
+</html>

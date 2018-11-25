@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cypher</title>
+	<link href="/styles.css" rel="stylesheet" type="text/css" media="all">
+</head>
+<body>
+	<div class = "header">
+	    <a style="font-weight: 600" href='home.html'>--Cypher-CMS--</a>
+	    <a style="float:right;" href='scores.html'>Scores</a>
+	    <a style="float:right;" href='login.html'>Login</a>
+	</div>
+	<table style="margin-top:50px;">
+		<tr th:each="user: ${userList}">
+		    <td th:text="${user.userId}" />
+		    <td th:text="${user.name}" />
+		</tr>
+	</table>
+	<form action="/usermanagment/create" method="post">
+		<h3>userid: <input type="text" name="userid"></h3>
+        <br />
+        <h3>name:  <input type="text" name="name"></h3>
+        <br />
+        <h3>username:  <input type="text" name="username"></h3>
+        <br />
+        <h3>password:  <input type="text" name="passwrd"></h3>
+        <br />
+        <h3>type_role:  <input type="text" name="type_role"></h3>
+        <br />
+        <input class="submitButton" name="create" type="submit" value="create" />&nbsp;
+	</form>
+</body>
+</html>

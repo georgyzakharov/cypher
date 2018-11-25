@@ -16,5 +16,31 @@
 
 
 	<dependencies>
+		<!-- internal dependency -->
+		<dependency>
+			<groupId>edu.sunypoly</groupId>
+			<artifactId>cypher-commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	
+		<!-- driver dependency -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+		
+		
+		<!-- spring dependency -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		
+		<!-- test dependency -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
