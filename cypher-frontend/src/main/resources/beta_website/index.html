@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="styles.css" type="text/css">
+
+<html lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cypher: Log-in</title>
+    
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">Cypher</a>
+                </div>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <h1>Cypher <small>programming contest management system</small></h1>
+            <hr>
+            <p class="well">A simple-to-use programming competition management system written in the Java programming language. Designed for Linux-based systems and developed with a target OS of Ubuntu 18.04 LTS. To begin using cypher sign up for an account using the button on the top right, or enter your credentials below.</p>
+        </div>
+        <div class="container">
+            <form class="form-inline" action="/mainpage" method="get">
+                <div class="form-group" style="margin-right: 10px;">
+                    <label for="typeOfUser"></label>
+                    <select class="form-control" id="typeOfUser" name="typeOfUser">
+                        <option value="0">Team</option>
+                        <option value="1">Proctor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default" name="mainpage" value="Log In">Log In</button>
+                </div>
+            </form>        
+        </div>         
+    </body>
+</html>
