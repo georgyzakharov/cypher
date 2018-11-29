@@ -32,7 +32,7 @@ public class HomeController {
 			ModelAndView model = new ModelAndView("home");
 			return model;
 		} else if (typeOfUser == 1) {
-			ModelAndView model = new ModelAndView("problem");
+			ModelAndView model = new ModelAndView("view_problems_for_proctor");
 			return model;
 		}
 		return null;
