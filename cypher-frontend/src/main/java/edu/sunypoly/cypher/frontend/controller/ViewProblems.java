@@ -12,7 +12,7 @@ public class ViewProblems {
 	public ModelAndView getProblems() {
 
 		
-		ModelAndView model = new ModelAndView("problem");
+		ModelAndView model = new ModelAndView("create_problem");
 		
 		return model;
 	}

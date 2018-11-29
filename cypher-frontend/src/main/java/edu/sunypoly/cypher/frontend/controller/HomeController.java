@@ -21,7 +21,7 @@ public class HomeController {
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
 	public ModelAndView getLogin() {
 
-		ModelAndView model = new ModelAndView("login");
+		ModelAndView model = new ModelAndView("log_in");
 
 		return model;
 	}
@@ -32,7 +32,7 @@ public class HomeController {
 			ModelAndView model = new ModelAndView("home");
 			return model;
 		} else if (typeOfUser == 1) {
-			ModelAndView model = new ModelAndView("view_problems_for_proctor");
+			ModelAndView model = new ModelAndView("proctor_landing");
 			return model;
 		}
 		return null;
