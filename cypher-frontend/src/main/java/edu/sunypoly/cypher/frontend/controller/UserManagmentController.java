@@ -17,11 +17,11 @@ public class UserManagmentController {
 	
 	@Resource private UserManagmentService userManagmentService;
 	
-	@RequestMapping(value = { "/usermanagment" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/usermanagement" }, method = RequestMethod.GET)
 	public ModelAndView getUsers() {
 
 		
-		ModelAndView model = new ModelAndView("users");
+		ModelAndView model = new ModelAndView("register");
 		model.addObject("userList", userManagmentService.getUserList());
 		return model;
 	}
