@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"edu.sunypoly.cypher.db"}]
