@@ -21,8 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
-import java.util.Arrays;
-import java.util.regex.*;
 
 /**
  * The submanager that controls the accounts of the cypher management system
