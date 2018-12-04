@@ -8,7 +8,7 @@ import org.cypher.commons.CypherUser;
 import org.springframework.stereotype.Service;
 
 import edu.sunypoly.cypher.db.UserRepository;
-import edu.suny
+
 
 @Service
 public class UserManagmentServiceImpl implements UserManagmentService {
@@ -35,6 +35,5 @@ public class UserManagmentServiceImpl implements UserManagmentService {
 		userRepository.createUser(user);
 	}
 
-	@Resource
-	private MIS manager;
+	
 }

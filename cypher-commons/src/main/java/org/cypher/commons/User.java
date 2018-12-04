@@ -1,10 +1,24 @@
 package org.cypher.commons;
 
 public class User {
-	
+
 	private String Uname;
 	private String Type;
-	private String password;
 	
+	
+	
+	public String getUname() {
+		return Uname;
+	}
+	public void setUname(String uname) {
+		Uname = uname;
+	}
+	public String getType() {
+		return Type;
+	}
+	public void setType(String type) {
+		Type = type;
+	}
+
 
 }
