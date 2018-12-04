@@ -619,7 +619,8 @@ public class DockerManager {
 			//rather than terminating once it is up, because by design containers terminate
 			//when the root process in the container exits. Thus, "tail -f /dev/null" will run
 			//forever and keep the container up and running until it is stopped.
-			pb.command("docker", "run", "-d", new String("--name=" + imageTag), imageTag, "tail", "-f", "/dev/null");
+			pb.command("docker", "run", "-d", new String("--memory=256m"), new String("--memory-swap=256m"),
+							new String("--cpus=2"), new String("--name=" + imageTag), imageTag, "tail", "-f", "/dev/null");
 
 			Process p = pb.start();
 
