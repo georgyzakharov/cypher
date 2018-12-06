@@ -29,7 +29,7 @@ public class HomeController {
 	@RequestMapping(value = { "/mainpage" }, method = RequestMethod.GET)
 	public ModelAndView getHome(int typeOfUser) {
 		if (typeOfUser == 0) {
-			ModelAndView model = new ModelAndView("home");
+			ModelAndView model = new ModelAndView("team_landing");
 			return model;
 		} else if (typeOfUser == 1) {
 			ModelAndView model = new ModelAndView("proctor_landing");
