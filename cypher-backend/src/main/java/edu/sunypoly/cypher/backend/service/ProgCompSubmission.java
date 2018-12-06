@@ -42,7 +42,7 @@ public class ProgCompSubmission implements Serializable, Runnable
 	public String TeamID;
 	public String code;
 	public String language;
-	public int score;
+	public String score;
 	public String result;
 	public boolean compilationStatus;
 	public boolean threadWait;

@@ -1,59 +1,44 @@
 package edu.sunypoly.cypher.backend.service;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.lang.Process;
+import java.lang.Runtime;
+import java.util.Scanner;
 
-public class GradingModuleHandler implements Runnable {
-	
+import edu.sunypoly.cypher.db.*;
+import java.io.*;
+
+public class GradingModuleHandler
+{
 	public GradingModuleHandler() 
 	{
-		subs = new LinkedBlockingQueue<Runnable>();
-		int Cores = Runtime.getRuntime().availableProcessors();
-		this.thread = new Thread(this);
-		this.stopthread = false;
-		executor = new ThreadPoolExecutor(Cores, Cores*2, 10, TimeUnit.SECONDS, this.subs);	
-		this.thread.start();
+		db = new Mis("jdbc:mysql://localhost/cypher_db?useSSL=false", "cypher", "cypher");
 	}
 	
-	public void close() 
+	public static void gradeSubmission(ProgCompSubmission submission) throws IOException 
 	{
-		stopthread = true;
-	}
-	
-	public ProgCompSubmission gradeSubmission(ProgCompSubmission sub)
-	{
-		this.subs.offer(sub);
-		while(sub.threadWait) 
-		{
-			
-		}
-		sub.threadWait = true;
+		String code = new String(db.Problem.getTestCode(submission.ProblemNumber));
 		
-		return sub;
+		File F = File.createTempFile(""+submission.TeamID+submission.ProblemNumber, "py");
+		
+		FileWriter fw = new FileWriter(F);
+		fw.write(code);
+		fw.flush();
+		fw.close();
+		
+		Process P = Runtime.getRuntime().exec("python3 " + F.getAbsolutePath());
+		
+		OutputStream InputsToProg = P.getOutputStream();
+		Scanner OutputsFromProg = new Scanner(P.getInputStream());
+		
+		InputsToProg.write(submission.result.getBytes());
+		submission.score = OutputsFromProg.next();
+		
+		OutputsFromProg.close();
+		InputsToProg.close();
+		F.delete();
+		
 	}
 	
-	public void run() 
-	{
-		while(!stopthread)
-		{
-			if(!subs.isEmpty()) 
-			{
-				try
-				{
-					executor.execute(subs.take());
-				}
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-	}
 	
-	private boolean stopthread;
-	private ThreadPoolExecutor executor;
-	private Thread thread;
-	private BlockingQueue<Runnable> subs;
+	private static Mis db;
 }

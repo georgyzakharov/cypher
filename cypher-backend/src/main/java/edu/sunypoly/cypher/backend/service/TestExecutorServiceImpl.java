@@ -1,5 +1,7 @@
 package edu.sunypoly.cypher.backend.service;
 
+import java.io.IOException;
+
 import org.cypher.commons.AssignmentTest;
 import org.cypher.commons.AssignmentTestResult;
 import org.cypher.commons.TestRequest;
@@ -38,6 +40,14 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		/**************/
 		ProgCompSubmission submission = new ProgCompSubmission(pnum, teamId, code, lang);
 		submission.run();
+		try
+		{
+			GradingModuleHandler.gradeSubmission(submission);
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 		/**************/
 		
 //DYLAN CODE
