@@ -17,8 +17,16 @@ public class ViewSubmissions {
 	@Resource
 	private ApplicationExecutorService service;
 
+	@RequestMapping(value = { "/create_solution" }, method = RequestMethod.GET)
+	public ModelAndView getSolution() {
+		
+		ModelAndView model = new ModelAndView("create_solution");
+		
+		return model;
+	}
+	
 	@RequestMapping(value = { "/submission" }, method = RequestMethod.POST)
-	public ModelAndView getAnswer(int language, String applicationCode, String test) {
+	public ModelAndView getAnswer(int problemName, int language, String applicationCode,String test) {
 
 		ModelAndView model = new ModelAndView("answer");
 
