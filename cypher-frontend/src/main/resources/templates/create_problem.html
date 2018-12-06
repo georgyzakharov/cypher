@@ -13,11 +13,11 @@
         <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="/">Cypher</a>
+                    <a class="navbar-brand" href="/">Cypher Proctor Interface</a>
                 </div>
                 <div class="navbar-right">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="proctor_landing.html"><span class="glyphicon glyphicon-home"></span> Back to Home</a></li>
+                        <li class="active"><a href="mainpage?typeOfUser=1"><span class="glyphicon glyphicon-home"></span> Back to Home</a></li>
                     </ul>
                 </div>
             </div>
@@ -28,7 +28,7 @@
         <hr>
         </div>
         <div class="container">
-            <form action="/proctor_landing" method="post">
+            <form action="/create_problem" method="post">
                 <div class="form-group">
                     <label for="problemName">Problem Name:</label>
                     <input type="text" class="form-control" id="problemName" name="problemName" placeholder="Name" required>

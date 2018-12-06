@@ -11,7 +11,6 @@ import edu.sunypoly.cypher.frontend.service.ApplicationExecutorService;
 
 @Controller
 public class HomeController {
-	private String[] language_array = { "Python", "Java", "C++", "C" };
 
 	// Spring injection
 	@Resource
@@ -29,7 +28,7 @@ public class HomeController {
 	@RequestMapping(value = { "/mainpage" }, method = RequestMethod.GET)
 	public ModelAndView getHome(int typeOfUser) {
 		if (typeOfUser == 0) {
-			ModelAndView model = new ModelAndView("home");
+			ModelAndView model = new ModelAndView("team_landing");
 			return model;
 		} else if (typeOfUser == 1) {
 			ModelAndView model = new ModelAndView("proctor_landing");
@@ -38,16 +37,4 @@ public class HomeController {
 		return null;
 	}
 
-	@RequestMapping(value = { "/submission" }, method = RequestMethod.POST)
-	public ModelAndView getAnswer(int language, String applicationCode, String test) {
-
-		ModelAndView model = new ModelAndView("answer");
-
-		model.addObject("language", language);
-		model.addObject("applicationCode", applicationCode);
-		model.addObject("test", test);
-		model.addObject("result", service.getResult(language_array[language], applicationCode, test));
-
-		return model;
-	}
 }

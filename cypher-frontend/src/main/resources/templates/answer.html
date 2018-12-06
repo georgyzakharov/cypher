@@ -1,25 +1,39 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Cypher</title>
-	<link href="styles.css" rel="stylesheet" type="text/css" media="all">
-</head>
-<div class = "header">
-    <a style="font-weight: 600" href='home.html'>--Cypher-CMS--</a>
-    <a style="float:right;" href='scores.html'>Scores</a>
-    <a style="float:right;" href='/'>Login</a>
-</div>
-<body>
-	<h1 style="margin-top:50px;">Results</h1>
-	<!--<p><span th:text="${language}"></span></p>-->
 
-	<h2>Your Submission:</h2>
-	<p><pre th:text="${applicationCode}"></pre></p>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="styles.css" type="text/css">
 
-	<h2>Entered Parameters:</h2>
-	<p><pre th:text="${test}"></pre></p>
-
-	<h2>Result:</h2>
-	<p><pre th:text="${result}"></pre></p>
-</body>
+<html lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cypher</title>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">Cypher</a>
+                </div>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="mainpage?typeOfUser=0"><span class="glyphicon glyphicon-home"></span> Back to Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <h1 >Results</h1>
+            <hr>
+	   
+            <label for="solution">Your Submission:</label>
+            <pre id="solution" th:text="${applicationCode}"></pre>
+        
+	       <label for="result">Output:</label>
+	       <pre id="score" th:text="${output}"></pre>
+            
+	       <label for="score">Score:</label>
+	       <pre id="score" th:text="${score}"></pre>
+            
+        </div>
+    </body>
 </html>
