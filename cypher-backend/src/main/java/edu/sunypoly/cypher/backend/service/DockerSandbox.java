@@ -122,7 +122,7 @@ public class DockerSandbox {
 			javaClassName = new String(s.substring(indexStart, indexEnd).trim());
 
 			path = new String(getCompiler(sub.language)
-				+ "-cypher:/home/appuser/" + javaClassName + getExtension(sub.language));
+				+ "-cypher:/home/anonymous/" + javaClassName + getExtension(sub.language));
 
 			return true;
 		}
@@ -146,20 +146,21 @@ public class DockerSandbox {
 				ProcessBuilder pb = new ProcessBuilder();
 				String errorMessage = new String();
 				String s = null;
-
+												
 				if (!getExtension(sub.language).contentEquals(".java")) {
 					path = new String(getCompiler(sub.language)
-							+ "-cypher:/home/appuser/" + sub.TeamID + getExtension(sub.language));
+							+ "-cypher:/home/anonymous/" + sub.TeamID + getExtension(sub.language));
+										
 					pb.command("docker", "container", "cp", f.getCanonicalPath(), getPath());
-
+										
 					Process p = pb.start();
 
 					BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
+															
 					while ((s = stdErr.readLine()) != null) {
 						errorMessage = errorMessage + s;
 					}
-
+															
 					if ((errorMessage != null) && (!errorMessage.isEmpty())) {
 						stdErr.close();
 						p.waitFor();
@@ -188,7 +189,7 @@ public class DockerSandbox {
 				else {
 					if (setJavaClassPath(sub.code)) {
 						pb.command("docker", "container", "cp", f.getCanonicalPath(), getPath());
-
+						
 						Process p = pb.start();
 
 						BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -453,7 +454,7 @@ public class DockerSandbox {
 			//Java
 			else if (getExtension(sub.language).equals(".java")) {
 				pb.command("docker", "container", "exec", new String(getCompiler(sub.language)
-							+ "-cypher"), "java", "-cp", "/home/appuser", getJavaClassName());
+							+ "-cypher"), "java", "-cp", "/home/anonymous", getJavaClassName());
 
 				Process p = pb.start();
 
