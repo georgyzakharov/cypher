@@ -8,6 +8,8 @@ import org.cypher.commons.TestRequest;
 import org.cypher.commons.TestResponse;
 import org.springframework.stereotype.Service;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+
 @Service
 public class TestExecutorServiceImpl implements TestExecutorService {
 
@@ -24,7 +26,7 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		String teamId = request.getTeamId();
 		String code = request.getApplicationCode();
 		String lang = request.getLanguage();
-		AssignmentTest[] tests = request.getAssignmentTests();
+		//AssignmentTest[] tests = request.getAssignmentTests();
 
 //GEORGY CODE
 		
@@ -60,6 +62,7 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		//testResult.setTestOutput(result);
 		testResult.setTestOutput(submission.result);
 		
+		System.err.println(testResult.getTestOutput());
 		
 		AssignmentTestResult [] assignmetTestResultArray = new AssignmentTestResult[1];
 		assignmetTestResultArray[0] = testResult;

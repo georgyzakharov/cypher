@@ -29,12 +29,16 @@ public class ViewSubmissions {
 	public ModelAndView getAnswer(int problemName, int language, String applicationCode,String test) {
 
 		ModelAndView model = new ModelAndView("answer");
+		
+		
 
 		model.addObject("language", language);
 		model.addObject("applicationCode", applicationCode);
 		model.addObject("test", test);
 		model.addObject("result", service.getResult(language_array[language], applicationCode, test));
 
+		System.err.println(test);
+		
 		return model;
 	}
 
