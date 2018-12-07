@@ -23,13 +23,13 @@
 			<version>${project.version}</version>
 		</dependency>
 		
-		<!-- This is an internal dependencies for common libraries -->
+		<!-- This is an internal dependencies for common libraries ->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>cypher-db</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		-->
 
 		<!-- Spring dependencies -->
 		<dependency>
@@ -67,4 +67,16 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<configuration>
+					<mainClass>edu.sunypoly.cypher.backend.App</mainClass>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

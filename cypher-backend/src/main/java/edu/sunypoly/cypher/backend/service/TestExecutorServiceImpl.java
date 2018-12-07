@@ -40,7 +40,7 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		/**************/
 		ProgCompSubmission submission = new ProgCompSubmission(pnum, teamId, code, lang);
 		submission.run();
-		try
+/*		try
 		{
 			GradingModuleHandler.gradeSubmission(submission);
 		} 
@@ -48,7 +48,7 @@ public class TestExecutorServiceImpl implements TestExecutorService {
 		{
 			e.printStackTrace();
 		}
-		/**************/
+*/		/**************/
 		
 //DYLAN CODE
 		/**************/
